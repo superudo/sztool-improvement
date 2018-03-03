@@ -78,7 +78,7 @@ export class TimeTable {
         minuteButton.classList.add('clocknum');
         minuteButton.innerText = this.formatNumber(index * 15);
         minuteButton.addEventListener('click', (e: Event) => {
-            this.changeMinutes(e.srcElement.innerHTML)
+            this.changeMinutes(e);
         });
         minuteLine.appendChild(minuteButton);
         return minuteLine;
@@ -91,23 +91,38 @@ export class TimeTable {
             var hourButton = document.createElement('button');
             hourButton.className = 'clocknum';
             hourButton.innerText = this.formatNumber(8 + 4 * i + index);
-            hourButton.addEventListener('click', (e: Event) => { 
-                this.changeHours(e.srcElement.innerHTML);
+            hourButton.addEventListener('click', (e: Event) => {
+                this.changeHours(e);
             });
             hourLine.appendChild(hourButton);
         }
         return hourLine;
     }
 
-    changeHours(newHourText: string) {
+    flashElement(el: Element): void {
+        el.classList.add('invalid');
+        setTimeout(() => {
+            el.classList.remove('invalid');
+        }, 200);
+    }
+    
+    changeHours(e: Event) {
+        var newHourText: string = e.srcElement.innerHTML;
         if (this.hourCallback(newHourText, this.parentControl) === true) {
             this.selectOption(this.target.hours, newHourText);
         }
+        else {
+            this.flashElement(e.srcElement);
+        }
     }
 
-    changeMinutes(newMinuteText: string) {
+    changeMinutes(e: Event) {
+        var newMinuteText: string = e.srcElement.innerHTML;
         if (this.minuteCallback(newMinuteText, this.parentControl) === true) {
             this.selectOption(this.target.minutes, newMinuteText);
+        }
+        else {
+            this.flashElement(e.srcElement);
         }
     }
 
