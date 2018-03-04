@@ -1,55 +1,35 @@
-import { TimeTable, TimeControl } from "./TimeTable";
+import { TimeTable } from "./TimeTable";
+import { TimeControlWrapper } from "./TimeControlWrapper";
 
 export class TimeSelector {
     fromTable: TimeTable;
     toTable: TimeTable;
-    fromTime: TimeControl;
-    toTime: TimeControl;
+    fromTime: TimeControlWrapper;
+    toTime: TimeControlWrapper;
 
-    constructor(insertAfter: Element, from: TimeControl, to: TimeControl) {
+    constructor(insertAfter: Element, from: TimeControlWrapper, to: TimeControlWrapper) {
         this.fromTime = from;
         this.toTime = to;
 
-        var fromControl = new TimeTable('from', this.fromTime, this.checkFromHour, this.checkFromMinute, this);
-        var toControl = new TimeTable('to', this.toTime, this.checkToHour, this.checkToMinute, this);
+        var fromControl = new TimeTable('from', this.fromTime);
+        var toControl = new TimeTable('to', this.toTime);
 
         var fromView = fromControl.getView();
         var toView = toControl.getView();
 
         insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
         fromView.parentNode.insertBefore(toView, fromView.nextSibling);
+
+        this.fromTime.setTimeCheckCallback(this.checkTimes, this);
+        this.toTime.setTimeCheckCallback(this.checkTimes, this);
     }
 
-    checkFromHour(h: string, p: TimeSelector): boolean {
-        var fromH = Number(h);
-        var fromM = p.fromTime.getMinutes();
-        var toH = p.toTime.getHours();
-        var toM = p.toTime.getMinutes();
-        return (60 * fromH + fromM < 60 * toH + toM);
-    }
-
-    checkFromMinute(m: string, p: TimeSelector): boolean {
-        var fromH = p.fromTime.getHours();
-        var fromM = Number(m);
-        var toH = p.toTime.getHours();
-        var toM = p.toTime.getMinutes();
-        return (60 * fromH + fromM < 60 * toH + toM);
-    }
-
-    checkToHour(h: string, p: TimeSelector): boolean {
-        var fromH = p.fromTime.getHours();
-        var fromM = p.fromTime.getMinutes();
-        var toH = Number(h);
-        var toM = p.toTime.getMinutes();
-        return (60 * fromH + fromM < 60 * toH + toM);
-    }
-
-    checkToMinute(m: string, p: TimeSelector): boolean {
-        var fromH = p.fromTime.getHours();
-        var fromM = p.fromTime.getMinutes();
-        var toH = p.toTime.getHours();
-        var toM = Number(m);
-        return (60 * fromH + fromM < 60 * toH + toM);
+    checkTimes(s: TimeSelector) {
+        var from = s.fromTime.getTimeInMinutes();
+        var to = s.toTime.getTimeInMinutes();
+        var isInvalid = (from >= to);
+        s.fromTime.indicateError(isInvalid);
+        s.toTime.indicateError(isInvalid);
     }
 
     checkTargetTime(fromHour?: string, fromMinutes?: string, toHour?: string, toMinutes?: string): boolean {

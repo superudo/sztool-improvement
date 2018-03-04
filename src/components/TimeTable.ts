@@ -1,46 +1,16 @@
 import './TimeTable.css';
 import { TimeSelector } from './TimeSelector';
-
-export class TimeControl {
-    hours: HTMLSelectElement;
-    minutes: HTMLSelectElement;
-
-    constructor(hours: HTMLSelectElement, minutes: HTMLSelectElement) {
-        this.hours = hours;
-        this.minutes = minutes;
-    }
-
-    getTime(): number {
-        return this.getHours() * 60 + this.getMinutes();
-    }
-
-    getHours(): number {
-        return Number(this.hours.value);
-    }
-
-    getMinutes(): number {
-        return Number(this.minutes.value);
-    }
-}
+import { TimeControlWrapper } from './TimeControlWrapper';
 
 type TimeCallback = (n: string, e: TimeSelector) => boolean;
 
 export class TimeTable {
     title: string;
-    target: TimeControl;
-    hourCallback: TimeCallback;
-    minuteCallback: TimeCallback;
-    parentControl: TimeSelector;
+    target: TimeControlWrapper;
 
-    constructor(selectorTitle: string, targetControl: TimeControl, 
-        hourCallback: TimeCallback, minuteCallback: TimeCallback,
-        parentControl: TimeSelector) {
-
+    constructor(selectorTitle: string, targetControl: TimeControlWrapper) {
         this.title = selectorTitle;
         this.target = targetControl;
-        this.hourCallback = hourCallback;
-        this.minuteCallback = minuteCallback;
-        this.parentControl = parentControl;
     }
 
     getView(): HTMLElement { 
@@ -108,35 +78,12 @@ export class TimeTable {
     
     changeHours(e: Event) {
         var newHourText: string = e.srcElement.innerHTML;
-        if (this.hourCallback(newHourText, this.parentControl) === true) {
-            this.selectOption(this.target.hours, newHourText);
-        }
-        else {
-            this.flashElement(e.srcElement);
-        }
+        this.target.setHours(newHourText);
     }
 
     changeMinutes(e: Event) {
         var newMinuteText: string = e.srcElement.innerHTML;
-        if (this.minuteCallback(newMinuteText, this.parentControl) === true) {
-            this.selectOption(this.target.minutes, newMinuteText);
-        }
-        else {
-            this.flashElement(e.srcElement);
-        }
-    }
-
-    selectOption(element: HTMLElement, newSelection: string) {
-        if (element instanceof HTMLSelectElement) {
-            var selectElement = element as HTMLSelectElement;
-            for (var index = 0; index < selectElement.options.length; ++index) {
-                var option = selectElement.options[index] as HTMLOptionElement;
-                if (option.text === newSelection) {
-                    selectElement.selectedIndex = index;
-                    break;
-                }
-            }
-        }
+        this.target.setMinutes(newMinuteText);
     }
 
     formatNumber(value: number): string {
@@ -145,4 +92,4 @@ export class TimeTable {
         }
         return ((value < 10)? '0': '') + value;
     }
-};
+}
