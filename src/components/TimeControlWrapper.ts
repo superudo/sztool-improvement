@@ -15,7 +15,6 @@ export class TimeControlWrapper {
     }
 
     setTimeCheckCallback(callback: (observer: TimeSelector) => void, observer: TimeSelector) {
-        console.log("Setting time check callbacks.");
         this.hourControl.addEventListener('change', (e: Event) => {
             callback(observer);
         });

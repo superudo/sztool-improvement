@@ -46,7 +46,9 @@ export class TimeTable {
         minuteLine.classList.add('clockline');
         var minuteButton = document.createElement('button');
         minuteButton.classList.add('clocknum');
-        minuteButton.innerText = this.formatNumber(index * 15);
+        var btnValue = this.formatNumber(index * 15);
+        minuteButton.innerText = btnValue;;
+        minuteButton.value = btnValue;
         minuteButton.addEventListener('click', (e: Event) => {
             this.changeMinutes(e);
         });
@@ -60,7 +62,9 @@ export class TimeTable {
         for (var i = 0; i < 3; ++i) {
             var hourButton = document.createElement('button');
             hourButton.className = 'clocknum';
-            hourButton.innerText = this.formatNumber(8 + 4 * i + index);
+            var btnValue = this.formatNumber(8 + 4 * i + index);
+            hourButton.innerText = btnValue;
+            hourButton.value = btnValue;
             hourButton.addEventListener('click', (e: Event) => {
                 this.changeHours(e);
             });
@@ -77,12 +81,12 @@ export class TimeTable {
     }
     
     changeHours(e: Event) {
-        var newHourText: string = e.srcElement.innerHTML;
+        var newHourText: string = (e.target as HTMLButtonElement).value;
         this.target.setHours(newHourText);
     }
 
     changeMinutes(e: Event) {
-        var newMinuteText: string = e.srcElement.innerHTML;
+        var newMinuteText: string = (e.target as HTMLButtonElement).value;
         this.target.setMinutes(newMinuteText);
     }
 
