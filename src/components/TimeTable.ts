@@ -103,7 +103,7 @@ export class TimeTable {
         el.classList.add('invalid');
         setTimeout(() => {
             el.classList.remove('invalid');
-        }, 200);
+        }, 100);
     }
     
     changeHours(e: Event) {
