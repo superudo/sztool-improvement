@@ -8,17 +8,16 @@ if (process.env.NODE_ENV !== 'production') {
 
 (
   function main() {
-    var fromControl = new TimeControlWrapper( 
-      document.getElementsByName('from_hh')[0] as HTMLSelectElement, 
-      document.getElementsByName('from_mm')[0] as HTMLSelectElement
-    );
-
-    var toControl = new TimeControlWrapper( 
-      document.getElementsByName('to_hh')[0] as HTMLSelectElement,
-      document.getElementsByName('to_mm')[0] as HTMLSelectElement
-    );
-
-    var selector: TimeSelector = new TimeSelector(document.getElementsByClassName('times')[0], fromControl, toControl);
+    new TimeSelector( 
+      new TimeControlWrapper( 
+        document.getElementsByName('from_hh')[0] as HTMLSelectElement, 
+        document.getElementsByName('from_mm')[0] as HTMLSelectElement
+      ), 
+      new TimeControlWrapper( 
+        document.getElementsByName('to_hh')[0] as HTMLSelectElement,
+        document.getElementsByName('to_mm')[0] as HTMLSelectElement
+      )
+    ).injectAfter(document.getElementsByClassName('times')[0]);
   }
 )();
 

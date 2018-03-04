@@ -56,9 +56,9 @@ export class TimeControlWrapper {
         }
     }
 
-    selectOption(selectElement: HTMLSelectElement, newSelection: string) {
-        for (var index = 0; index < selectElement.options.length; ++index) {
-            var option = selectElement.options[index] as HTMLOptionElement;
+    private selectOption(selectElement: HTMLSelectElement, newSelection: string) {
+        for (let index = 0; index < selectElement.options.length; ++index) {
+            let option = selectElement.options[index] as HTMLOptionElement;
             if (option.text === newSelection) {
                 selectElement.selectedIndex = index;
                 break;
@@ -66,8 +66,8 @@ export class TimeControlWrapper {
         }
     }
 
-    fireEvent(element: HTMLElement, event: string) {
-        var evt = document.createEvent("HTMLEvents");
+    private fireEvent(element: HTMLElement, event: string) {
+        let evt = document.createEvent("HTMLEvents");
         evt.initEvent(event, true, true ); // event type,bubbling,cancelable
         return !element.dispatchEvent(evt);
     }
