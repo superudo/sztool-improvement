@@ -12,6 +12,8 @@ export class TimeControlWrapper {
         if (minute instanceof HTMLSelectElement) {
             this.minuteControl = minute as HTMLSelectElement;
         }
+
+        
     }
 
     setTimeCheckCallback(callback: (observer: TimeSelector) => void, observer: TimeSelector) {

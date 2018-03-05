@@ -3,21 +3,30 @@ import { TimeSelector } from './TimeSelector';
 import { TimeControlWrapper } from './TimeControlWrapper';
 
 export class TimeTable {
-    title: string;
     target: TimeControlWrapper;
+    button: HTMLInputElement;
 
-    constructor(selectorTitle: string, targetControl: TimeControlWrapper) {
-        this.title = selectorTitle;
+    constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
     }
 
-    getView(): HTMLElement { 
+    getView(btn?: HTMLInputElement): HTMLElement { 
         let outerDiv = document.createElement('div');
         outerDiv.classList.add('outer');
 
         let titleLine = document.createElement('div');
         titleLine.classList.add('clockline', 'clocktitle');
-        titleLine.innerText = this.title;
+
+        titleLine.appendChild(this.target.hourControl);
+        titleLine.appendChild(new Text(':'));
+        titleLine.appendChild(this.target.minuteControl);
+
+        if (btn) {
+            btn.value = '➽';
+            titleLine.appendChild(btn);
+            this.button = btn;
+        }
+
         outerDiv.appendChild(titleLine);
 
         let hoursContainer = document.createElement('div');
@@ -39,7 +48,7 @@ export class TimeTable {
         return outerDiv;
     }
 
-    private getMinuteLine(index: number): HTMLElement {
+   private getMinuteLine(index: number): HTMLElement {
         let minuteLine = document.createElement('div');
         minuteLine.classList.add('clockline');
         let minuteButton = document.createElement('button');
@@ -47,8 +56,10 @@ export class TimeTable {
         let btnValue = this.formatNumber(index * 15);
         minuteButton.innerText = btnValue;;
         minuteButton.value = btnValue;
+        minuteButton.type = 'button';
         minuteButton.addEventListener('click', (e: Event) => {
             this.changeMinutes(e);
+            e.stopPropagation();
         });
         minuteLine.appendChild(minuteButton);
         return minuteLine;
@@ -63,8 +74,10 @@ export class TimeTable {
             let btnValue = this.formatNumber(8 + 4 * i + index);
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;
+            hourButton.type = 'button';
             hourButton.addEventListener('click', (e: Event) => {
                 this.changeHours(e);
+                e.stopPropagation();
             });
             hourLine.appendChild(hourButton);
         }

@@ -4,20 +4,22 @@ import { TimeControlWrapper } from "./TimeControlWrapper";
 export class TimeSelector {
     fromTable: TimeTable;
     toTable: TimeTable;
-    fromTime: TimeControlWrapper;
-    toTime: TimeControlWrapper;
+    private fromTime: TimeControlWrapper;
+    private toTime: TimeControlWrapper;
+    private inputButton: HTMLInputElement;
 
-    constructor(from: TimeControlWrapper, to: TimeControlWrapper) {
+    constructor(from: TimeControlWrapper, to: TimeControlWrapper, btn: HTMLInputElement) {
         this.fromTime = from;
         this.toTime = to;
+        this.inputButton = btn;
     }
 
     injectAfter(insertAfter: Element): void {
-        let fromControl = new TimeTable('Start', this.fromTime);
-        let toControl = new TimeTable('End', this.toTime);
+        let fromControl = new TimeTable(this.fromTime);
+        let toControl = new TimeTable(this.toTime);
 
         let fromView = fromControl.getView();
-        let toView = toControl.getView();
+        let toView = toControl.getView(this.inputButton);
 
         insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
         fromView.parentNode.insertBefore(toView, fromView.nextSibling);
