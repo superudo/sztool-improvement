@@ -1,10 +1,68 @@
-import './TimeTable.css';
 import { TimeSelector } from './TimeSelector';
 import { TimeControlWrapper } from './TimeControlWrapper';
+import { style, media } from 'typestyle';
+import * as csx from "csx";
 
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
 const HOUR_COLUMNS: number = 4;
+
+const cssClockline = style({
+    backgroundColor: csx.green.toString(),
+    padding: '0px',
+    overflow: 'auto',
+    $nest: {
+        '&>button': {
+            backgroundColor: csx.color('#4caf50').toString(),
+            border: '1px solid ' + csx.green.toString(),
+            color: csx.white.toString(),
+            padding: '0.1em 0.7em',
+            cursor: 'pointer',
+            float: 'left'
+        },
+        '&>button:hover': {
+            backgroundColor: csx.rgb(64, 128, 64).toString()
+        },
+        '&+button': {
+            clear: 'left'
+        },
+        '&>select': {
+            margin: '1px auto'
+        }
+    }
+})
+
+const cssOuter = style({
+    backgroundColor: csx.burlywood.toString(),
+    padding: '0.3em',
+    fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+    fontSize: '10pt',
+    overflowY: 'auto',
+    display: 'inline-block'
+})
+
+const cssClockTitle = style({
+    color: csx.white.toString(),
+    backgroundColor: csx.darkgreen.toString(),
+    border: '1px solid ' + csx.green.toString(),
+    fontWeight: 'bold',
+    padding: '0.1em 0.2em',
+    marginBottom: '0.3em'   
+})
+
+const cssHours = style({
+    float: 'left'
+})
+
+const cssMinutes = style({
+    float: 'left',
+    marginLeft: '0.5em'
+})
+
+const cssInputButton = style({
+    float: 'right',
+    margin: '1px auto'
+})
 
 export class TimeTable {
     target: TimeControlWrapper;
@@ -15,10 +73,10 @@ export class TimeTable {
 
     createDom(btn: HTMLInputElement, btnValue: string): HTMLElement { 
         let outerDiv = document.createElement('div');
-        outerDiv.classList.add('tt-outer');
+        outerDiv.classList.add(cssOuter);
 
         let titleLine = document.createElement('div');
-        titleLine.classList.add('tt-clockline', 'tt-clocktitle');
+        titleLine.classList.add(cssClockline, cssClockTitle);
 
         titleLine.appendChild(this.target.hourControl);
         titleLine.appendChild(new Text(':'));
@@ -27,7 +85,7 @@ export class TimeTable {
         if (btn && btn != null) {
             btn.value = (btnValue)? btnValue: '???';
             titleLine.appendChild(btn);
-            btn.classList.add('tt-inputbutton');
+            btn.classList.add(cssInputButton);
         }
 
         outerDiv.appendChild(titleLine);
@@ -37,7 +95,7 @@ export class TimeTable {
             let hourLine = this.getHourLine(i);
             hoursContainer.appendChild(hourLine);
         }
-        hoursContainer.classList.add('tt-hours');
+        hoursContainer.classList.add(cssHours);
         outerDiv.appendChild(hoursContainer);
 
         let minutesContainer = document.createElement('div');
@@ -45,7 +103,7 @@ export class TimeTable {
             let minuteLine = this.getMinuteLine(i);
             minutesContainer.appendChild(minuteLine);
         }
-        minutesContainer.classList.add('tt-minutes');
+        minutesContainer.classList.add(cssMinutes);
         outerDiv.appendChild(minutesContainer);
 
         return outerDiv;
@@ -53,9 +111,8 @@ export class TimeTable {
 
    private getMinuteLine(index: number): HTMLElement {
         let minuteLine = document.createElement('div');
-        minuteLine.classList.add('tt-clockline');
+        minuteLine.classList.add(cssClockline);
         let minuteButton = document.createElement('button');
-        minuteButton.classList.add('tt-clocknum');
         let btnValue = this.formatNumber(index * 15);
         minuteButton.innerText = btnValue;;
         minuteButton.value = btnValue;
@@ -70,10 +127,9 @@ export class TimeTable {
 
     private getHourLine(index: number): HTMLElement {
         let hourLine = document.createElement('div');
-        hourLine.className = 'tt-clockline';
+        hourLine.classList.add(cssClockline);
         for (let i = 0; i < HOUR_COLUMNS; ++i) {
             let hourButton = document.createElement('button');
-            hourButton.className = 'tt-clocknum';
             let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * i + index);
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;

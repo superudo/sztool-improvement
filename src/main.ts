@@ -3,16 +3,10 @@ import { TimeSelector } from "./components/TimeSelector";
 import { TimeControlWrapper } from "./components/TimeControlWrapper";
 import { TimesParagraphWrapper } from "./components/TimesParagraphWrapper";
 import * as LocalStorageService from './environment/LocalStorageService'
+import { ControlSwitcher, USE_CONTROL_ITEM } from "./components/ControlSwitcher";
 
 if (process.env.NODE_ENV !== 'production') {
   console.log('Looks like we are in development mode!');
-}
-
-if (LocalStorageService.isSupported) {
-  console.log("Local storage supported.");
-}
-else {
-  console.log("Seems not.");
 }
 
 (function main() {
@@ -27,12 +21,6 @@ else {
     timesParagraph.hideParagraph();
   }
 
-  function switchCallback(e: Event) {
-    localStorage.setItem('useNewControl', 'true');
-    window.location.replace(window.location.pathname + window.location.hash);
-    e.stopPropagation();
-  };
-
   if (LocalStorageService.isSupported === false) {
     console.warn("Local storage not supported.");
     return;
@@ -40,11 +28,11 @@ else {
   let timesParagraph = new TimesParagraphWrapper(
     document.getElementsByClassName('times')[0] as HTMLParagraphElement);
 
-  if (LocalStorageService.hasItem('useNewControl')) {
+  if (LocalStorageService.hasItem(USE_CONTROL_ITEM)) {
     injectControl();
   }  
   else {
-    timesParagraph.appendSwitch(switchCallback);
+    new ControlSwitcher().injectOnSwitch(timesParagraph.getParagraphElement());
   }
 })();
 

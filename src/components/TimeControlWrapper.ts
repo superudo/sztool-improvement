@@ -1,7 +1,10 @@
-import './TimeControlWrapper.css';
 import { TimeSelector } from './TimeSelector';
+import { style } from 'typestyle';
+import * as csx from 'csx';
 
-const CSS_INVALID_CLASS: string = 'tcw-invalid';
+const cssInvalid = style({
+    color: csx.important(csx.red.toString())
+})
 
 export class TimeControlWrapper {
     hourControl: HTMLSelectElement;
@@ -49,12 +52,12 @@ export class TimeControlWrapper {
 
     indicateError(isError: boolean) {
         if (isError) {
-            this.hourControl.classList.add(CSS_INVALID_CLASS);
-            this.minuteControl.classList.add(CSS_INVALID_CLASS);
+            this.hourControl.classList.add(cssInvalid);
+            this.minuteControl.classList.add(cssInvalid);
         }
         else {
-            this.hourControl.classList.remove(CSS_INVALID_CLASS);
-            this.minuteControl.classList.remove(CSS_INVALID_CLASS);
+            this.hourControl.classList.remove(cssInvalid);
+            this.minuteControl.classList.remove(cssInvalid);
         }
     }
 

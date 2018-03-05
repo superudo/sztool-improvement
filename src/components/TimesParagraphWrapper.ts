@@ -1,7 +1,16 @@
-import './TimesParagraphWrapper.css';
+import { style } from "typestyle";
 
 const INPUT_BUTTON_TEXT: string = 'Eintragen!';
 const CANCEL_BUTTON_TEXT: string = 'cancel edit!';
+
+const cssHiddenTime = style({
+    height: '0',
+    visibility: 'collapse'
+})
+
+const cssSwitchLink = style({
+    textDecoration: 'none'
+})
 
 export interface ITimeControls {
     fromHours: HTMLSelectElement;
@@ -18,18 +27,9 @@ export class TimesParagraphWrapper {
     }
 
     hideParagraph() {
-        this.paragraph.classList.add('tpw-hidden-time');
+        this.paragraph.classList.add(cssHiddenTime);
     }
 
-    appendSwitch(callback: (e: Event) => void): void {
-        let linkSwitch = document.createElement('a');
-        linkSwitch.href = '#';
-        linkSwitch.addEventListener('click', callback);
-        linkSwitch.innerText = '☑';
-        linkSwitch.classList.add('tpw-switchLink');
-        this.paragraph.appendChild(linkSwitch);
-    }
-        
     getParagraphElement(): HTMLParagraphElement {
         return this.paragraph;
     }
