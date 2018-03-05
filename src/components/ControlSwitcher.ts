@@ -30,5 +30,6 @@ export class ControlSwitcher {
             window.location.replace(window.location.pathname);
             e.stopPropagation();
         });
+        parent.appendChild(switchLink);
     }
 }
