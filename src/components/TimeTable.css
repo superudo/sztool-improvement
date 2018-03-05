@@ -22,6 +22,10 @@
   float: left;
 }
 
+.clockline>button:hover {
+  background-color: rgb(64, 128, 64);
+}
+
 .clocktitle {
   color: white;
   background-color: darkgreen;
