@@ -24,6 +24,7 @@ export class TimeTable {
         if (btn) {
             btn.value = '➽';
             titleLine.appendChild(btn);
+            btn.classList.add('inputbutton');
             this.button = btn;
         }
 

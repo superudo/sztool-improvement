@@ -42,3 +42,12 @@
   margin-left: 0.5em;
   float: left;
 }
+
+.clockline>select {
+  margin: 1px auto;
+}
+
+.inputbutton {
+  float: right;
+  margin: 1px auto;
+}

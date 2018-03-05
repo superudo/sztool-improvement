@@ -34,6 +34,7 @@ export class TimeSelector {
         let isInvalid = (from >= to);
         s.fromTime.indicateError(isInvalid);
         s.toTime.indicateError(isInvalid);
+        s.inputButton.disabled = isInvalid;
     }
 
     private checkTargetTime(fromHour?: string, fromMinutes?: string, toHour?: string, toMinutes?: string): boolean {
