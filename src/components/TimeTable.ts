@@ -2,15 +2,18 @@ import './TimeTable.css';
 import { TimeSelector } from './TimeSelector';
 import { TimeControlWrapper } from './TimeControlWrapper';
 
+const START_HOUR: number = 7;
+const TIME_ROWS: number = 4;
+const HOUR_COLUMNS: number = 4;
+
 export class TimeTable {
     target: TimeControlWrapper;
-    button: HTMLInputElement;
-
+    
     constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
     }
 
-    getView(btn?: HTMLInputElement): HTMLElement { 
+    createDom(btn: HTMLInputElement, btnValue: string): HTMLElement { 
         let outerDiv = document.createElement('div');
         outerDiv.classList.add('outer');
 
@@ -21,17 +24,16 @@ export class TimeTable {
         titleLine.appendChild(new Text(':'));
         titleLine.appendChild(this.target.minuteControl);
 
-        if (btn) {
-            btn.value = '➽';
+        if (btn && btn != null) {
+            btn.value = (btnValue)? btnValue: '???';
             titleLine.appendChild(btn);
             btn.classList.add('inputbutton');
-            this.button = btn;
         }
 
         outerDiv.appendChild(titleLine);
 
         let hoursContainer = document.createElement('div');
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < TIME_ROWS; ++i) {
             let hourLine = this.getHourLine(i);
             hoursContainer.appendChild(hourLine);
         }
@@ -39,7 +41,7 @@ export class TimeTable {
         outerDiv.appendChild(hoursContainer);
 
         let minutesContainer = document.createElement('div');
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < TIME_ROWS; ++i) {
             let minuteLine = this.getMinuteLine(i);
             minutesContainer.appendChild(minuteLine);
         }
@@ -69,10 +71,10 @@ export class TimeTable {
     private getHourLine(index: number): HTMLElement {
         let hourLine = document.createElement('div');
         hourLine.className = 'clockline';
-        for (let i = 0; i < 3; ++i) {
+        for (let i = 0; i < HOUR_COLUMNS; ++i) {
             let hourButton = document.createElement('button');
             hourButton.className = 'clocknum';
-            let btnValue = this.formatNumber(8 + 4 * i + index);
+            let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * i + index);
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;
             hourButton.type = 'button';

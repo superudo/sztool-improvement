@@ -1,5 +1,8 @@
 import './TimesParagraphWrapper.css';
 
+const INPUT_BUTTON_TEXT: string = 'Eintragen!';
+const CANCEL_BUTTON_TEXT: string = 'cancel edit!';
+
 export interface ITimeControls {
     fromHours: HTMLSelectElement;
     toHours: HTMLSelectElement;
@@ -32,12 +35,21 @@ export class TimesParagraphWrapper {
     }
 
     getInputButton(): HTMLInputElement {
+        return this.getButton(INPUT_BUTTON_TEXT);
+    }
+
+    getCancelButton(): HTMLInputElement {
+        return this.getButton(CANCEL_BUTTON_TEXT);
+    }
+
+    private getButton(withValue: string) {
         let inputChildren = this.paragraph.getElementsByTagName('input');
         for (let i = 0; i < inputChildren.length; ++i) {
-            if (inputChildren[i].type.toLowerCase() === 'button') {
+            if (inputChildren[i].type.toLowerCase() === 'button'
+             && inputChildren[i].value.toLowerCase() === withValue.toLowerCase()) {
                 return inputChildren[i];
             }
         }
-        throw "Button element not found!";
+        return null;
     }
 }

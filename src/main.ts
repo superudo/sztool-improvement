@@ -15,7 +15,8 @@ if (process.env.NODE_ENV !== 'production') {
     new TimeSelector( 
       new TimeControlWrapper(controls.fromHours, controls.fromMinutes), 
       new TimeControlWrapper(controls.toHours, controls.toMinutes),
-      timesParagraph.getInputButton()
+      timesParagraph.getInputButton(),
+      timesParagraph.getCancelButton()
     ).injectAfter(timesParagraph.getParagraphElement());
     timesParagraph.hideParagraph();
   }

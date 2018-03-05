@@ -1,25 +1,31 @@
 import { TimeTable } from "./TimeTable";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 
+const INPUT_BUTTON_SIGN: string ='➽';
+const CANCEL_BUTTON_SIGN: string = '⛔';
+
 export class TimeSelector {
     fromTable: TimeTable;
     toTable: TimeTable;
     private fromTime: TimeControlWrapper;
     private toTime: TimeControlWrapper;
     private inputButton: HTMLInputElement;
+    private cancelButton: HTMLInputElement;
 
-    constructor(from: TimeControlWrapper, to: TimeControlWrapper, btn: HTMLInputElement) {
+    constructor(from: TimeControlWrapper, to: TimeControlWrapper, 
+        inputButton: HTMLInputElement, cancelButton: HTMLInputElement) {
         this.fromTime = from;
         this.toTime = to;
-        this.inputButton = btn;
+        this.inputButton = inputButton;
+        this.cancelButton = cancelButton;
     }
 
     injectAfter(insertAfter: Element): void {
         let fromControl = new TimeTable(this.fromTime);
         let toControl = new TimeTable(this.toTime);
 
-        let fromView = fromControl.getView();
-        let toView = toControl.getView(this.inputButton);
+        let fromView = fromControl.createDom(this.cancelButton, CANCEL_BUTTON_SIGN);
+        let toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
 
         insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
         fromView.parentNode.insertBefore(toView, fromView.nextSibling);

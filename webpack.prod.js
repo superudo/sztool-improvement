@@ -1,14 +1,18 @@
 const merge = require('webpack-merge');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const common = require('./webpack.common.js');
 const webpack = require('webpack');
+const ClosureCompilerPlugin = require('webpack-closure-compiler');
 
 module.exports = merge(common, {
   mode: 'production',
-  devtool: 'source-map',
   plugins: [
-    new UglifyJSPlugin({
-        sourceMap: true
+    new ClosureCompilerPlugin({
+      compiler: {
+        language_in: 'ECMASCRIPT6',
+        language_out: 'ECMASCRIPT5',
+        compilation_level: 'ADVANCED'
+      },
+      jsCompiler: true
     }),
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production')
