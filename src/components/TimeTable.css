@@ -1,4 +1,4 @@
-.outer {
+.tt-outer {
   background-color: burlywood;
   padding: 0.3em;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -7,13 +7,13 @@
   display: inline-block;
 }
 
-.clockline {
+.tt-clockline {
   background-color: green;
   padding: 0px;
   overflow: auto;
 }
 
-.clockline>button {
+.tt-clockline>button {
   background-color: #4caf50;
   border: 1px solid green;
   color: white;
@@ -22,11 +22,11 @@
   float: left;
 }
 
-.clockline>button:hover {
+.tt-clockline>button:hover {
   background-color: rgb(64, 128, 64);
 }
 
-.clocktitle {
+.tt-clocktitle {
   color: white;
   background-color: darkgreen;
   border: 1px solid green;
@@ -35,24 +35,24 @@
   margin-bottom: 0.3em;
 }
 
-.clockline+button {
+.tt-clockline+button {
   clear: left;
 }
 
-.hours {
+.tt-hours {
   float: left;
 }
 
-.minutes {
+.tt-minutes {
   margin-left: 0.5em;
   float: left;
 }
 
-.clockline>select {
+.tt-clockline>select {
   margin: 1px auto;
 }
 
-.inputbutton {
+.tt-inputbutton {
   float: right;
   margin: 1px auto;
 }

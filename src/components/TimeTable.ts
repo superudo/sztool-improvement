@@ -15,10 +15,10 @@ export class TimeTable {
 
     createDom(btn: HTMLInputElement, btnValue: string): HTMLElement { 
         let outerDiv = document.createElement('div');
-        outerDiv.classList.add('outer');
+        outerDiv.classList.add('tt-outer');
 
         let titleLine = document.createElement('div');
-        titleLine.classList.add('clockline', 'clocktitle');
+        titleLine.classList.add('tt-clockline', 'tt-clocktitle');
 
         titleLine.appendChild(this.target.hourControl);
         titleLine.appendChild(new Text(':'));
@@ -27,7 +27,7 @@ export class TimeTable {
         if (btn && btn != null) {
             btn.value = (btnValue)? btnValue: '???';
             titleLine.appendChild(btn);
-            btn.classList.add('inputbutton');
+            btn.classList.add('tt-inputbutton');
         }
 
         outerDiv.appendChild(titleLine);
@@ -37,7 +37,7 @@ export class TimeTable {
             let hourLine = this.getHourLine(i);
             hoursContainer.appendChild(hourLine);
         }
-        hoursContainer.classList.add('hours');
+        hoursContainer.classList.add('tt-hours');
         outerDiv.appendChild(hoursContainer);
 
         let minutesContainer = document.createElement('div');
@@ -45,7 +45,7 @@ export class TimeTable {
             let minuteLine = this.getMinuteLine(i);
             minutesContainer.appendChild(minuteLine);
         }
-        minutesContainer.classList.add('minutes');
+        minutesContainer.classList.add('tt-minutes');
         outerDiv.appendChild(minutesContainer);
 
         return outerDiv;
@@ -53,9 +53,9 @@ export class TimeTable {
 
    private getMinuteLine(index: number): HTMLElement {
         let minuteLine = document.createElement('div');
-        minuteLine.classList.add('clockline');
+        minuteLine.classList.add('tt-clockline');
         let minuteButton = document.createElement('button');
-        minuteButton.classList.add('clocknum');
+        minuteButton.classList.add('tt-clocknum');
         let btnValue = this.formatNumber(index * 15);
         minuteButton.innerText = btnValue;;
         minuteButton.value = btnValue;
@@ -70,10 +70,10 @@ export class TimeTable {
 
     private getHourLine(index: number): HTMLElement {
         let hourLine = document.createElement('div');
-        hourLine.className = 'clockline';
+        hourLine.className = 'tt-clockline';
         for (let i = 0; i < HOUR_COLUMNS; ++i) {
             let hourButton = document.createElement('button');
-            hourButton.className = 'clocknum';
+            hourButton.className = 'tt-clocknum';
             let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * i + index);
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;

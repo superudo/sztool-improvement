@@ -18,9 +18,18 @@ export class TimesParagraphWrapper {
     }
 
     hideParagraph() {
-        this.paragraph.classList.add('hidden-time');
+        this.paragraph.classList.add('tpw-hidden-time');
     }
 
+    appendSwitch(callback: (e: Event) => void): void {
+        let linkSwitch = document.createElement('a');
+        linkSwitch.href = '#';
+        linkSwitch.addEventListener('click', callback);
+        linkSwitch.innerText = '☑';
+        linkSwitch.classList.add('tpw-switchLink');
+        this.paragraph.appendChild(linkSwitch);
+    }
+        
     getParagraphElement(): HTMLParagraphElement {
         return this.paragraph;
     }
