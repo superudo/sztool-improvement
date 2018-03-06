@@ -10,9 +10,9 @@ module.exports = merge(common, {
       compiler: {
         language_in: 'ECMASCRIPT6',
         language_out: 'ECMASCRIPT5',
-        compilation_level: 'ADVANCED'
+        compilation_level: 'SIMPLE'
       },
-      jsCompiler: true
+      concurrency: 3
     }),
     new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify('production')

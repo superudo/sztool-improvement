@@ -27,7 +27,7 @@ const cssClockline = style({
             clear: 'left'
         },
         '&>select': {
-            margin: '1px auto'
+            margin: '0.25em auto'
         }
     }
 })
@@ -61,7 +61,7 @@ const cssMinutes = style({
 
 const cssInputButton = style({
     float: 'right',
-    margin: '1px auto'
+    margin: '0.2em auto'
 })
 
 export class TimeTable {
