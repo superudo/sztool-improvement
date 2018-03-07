@@ -125,12 +125,12 @@ export class TimeTable {
         return minuteLine;
     }
 
-    private getHourLine(index: number): HTMLElement {
+    private getHourLine(timeRow: number): HTMLElement {
         let hourLine = document.createElement('div');
         hourLine.classList.add(cssClockline);
         for (let i = 0; i < HOUR_COLUMNS; ++i) {
             let hourButton = document.createElement('button');
-            let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * i + index);
+            let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * timeRow + i);
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;
             hourButton.type = 'button';
