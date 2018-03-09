@@ -28,16 +28,5 @@ export class ControlSwitcher {
             e.stopPropagation();
         });
         parent.appendChild(switchLink);
-
-        let testText = document.createElement('span');
-        testText.innerText = 'Hello world!';
-        testText.classList.add(myClass);
-        testText.addEventListener('mouseenter', (e: Event) => {
-            setTheme('panda')
-        });
-        testText.addEventListener('mouseleave', (e: Event) => {
-            setTheme('lion')
-        });
-        parent.appendChild(testText);
     }
 }

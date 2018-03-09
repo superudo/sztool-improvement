@@ -1,5 +1,6 @@
 import { stylesheet, style } from "typestyle/lib";
 import * as csx from "csx";
+import * as csstips from "csstips";
 
 function applyVars(dictionary: any) {
     const el = document.body;
@@ -12,7 +13,7 @@ function applyVars(dictionary: any) {
 
 export function setTheme(theme: string) {
     switch (theme) {
-        case 'panda': 
+        case 'panda':
             applyVars({
                 '--clockline-background-color': csx.green.toString()
             });
@@ -34,23 +35,25 @@ export const myClass = style({
     color: 'var(--brand-color)'
 });
 
-export const css = stylesheet({
-    controlArea: {
-        fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-        fontSize: '11pt',
-        display: 'inline-block',
-        $nest: {
-            'select': {
-                fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-                fontSize: '10pt'
-            },
-            'input': {
-                fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-                fontSize: '9pt'
+export namespace css {
+    export const controlArea = style(
+        csstips.content,
+        {
+            fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+            fontSize: '11pt',
+            $nest: {
+                'select': {
+                    fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+                    fontSize: '10pt'
+                },
+                'input': {
+                    fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+                    fontSize: '9pt'
+                }
             }
-        }
-    },
-    clockline: {
+        });
+
+    export const clockline = style({
         backgroundColor: csx.green.toString(),
         padding: '0px',
         overflow: 'auto',
@@ -73,43 +76,51 @@ export const css = stylesheet({
                 margin: '0.25em auto'
             }
         }
-    },
-    outer: {
-        backgroundColor: csx.burlywood.toString(),
-        padding: '0.3em',
-        fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-        fontSize: '10pt',
-        overflowY: 'auto',
-        display: 'inline-block'
-    },
-    clockTitle: {
+    });
+
+    export const outer = style(
+        csstips.inlineBlock,
+        {
+            backgroundColor: csx.burlywood.toString(),
+            padding: '0.3em',
+            fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
+            fontSize: '10pt',
+            overflowY: 'auto'
+        });
+
+    export const clockTitle = style({
         color: csx.white.toString(),
         backgroundColor: csx.darkgreen.toString(),
         border: '1px solid ' + csx.green.toString(),
         fontWeight: 'bold',
         padding: '0.1em 0.2em',
-        marginBottom: '0.3em'   
-    },
-    hours: {
+        marginBottom: '0.3em'
+    });
+
+    export const hours = style({
         float: 'left'
-    },
-    minutes: {
+    });
+
+    export const minutes = style({
         float: 'left',
         marginLeft: '0.5em'
-    },
-    inputButton: {
+    });
+
+    export const inputButton = style({
         float: 'right',
         margin: '0.2em auto'
-    },
-    hiddenTime: {
+    });
+
+    export const hiddenTime = style({
         height: '0',
         visibility: 'collapse'
-    },
-    switchLink: {
-        textDecoration: 'none'
-    },
-    invalid: {
-        color: csx.important(csx.red.toString())
-    }
-});
+    });
 
+    export const switchLink = style({
+        textDecoration: 'none'
+    });
+
+    export const invalid = style({
+        color: csx.important(csx.red.toString())
+    });
+}

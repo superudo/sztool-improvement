@@ -23,26 +23,25 @@ export class TimeSelector {
         this.cancelButton = cancelButton;
     }
 
-    injectAfter(insertAfter: Element): void {
+    initApp(appRootId: string): void {
         let fromControl = new TimeTable(this.fromTime);
         let toControl = new TimeTable(this.toTime);
 
         let fromView = fromControl.createDom(this.cancelButton, CANCEL_BUTTON_SIGN);
         let toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
 
-        let controlDiv = document.createElement('div');
+        let controlDiv = document.getElementById(appRootId);
+        if (controlDiv === null) {
+            throw "App root not found.";
+        }
         controlDiv.classList.add(css.controlArea);
         controlDiv.appendChild(fromView);
         controlDiv.appendChild(toView);
 
-        insertAfter.parentNode.insertBefore(controlDiv, insertAfter.nextSibling);
-
-        // insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
-        // fromView.parentNode.insertBefore(toView, fromView.nextSibling);
         new ControlSwitcher().injectOffSwitch(toView.parentElement);
 
         this.fromTime.setTimeCheckCallback(this.checkTimes, this);
-        this.toTime.setTimeCheckCallback(this.checkTimes, this);
+         this.toTime.setTimeCheckCallback(this.checkTimes, this);
     }
         
     private checkTimes(s: TimeSelector) {
