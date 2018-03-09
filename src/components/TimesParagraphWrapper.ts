@@ -1,16 +1,8 @@
 import { style } from "typestyle";
+import { css } from "./ComponentStyles";
 
 const INPUT_BUTTON_TEXT: string = 'Eintragen!';
 const CANCEL_BUTTON_TEXT: string = 'cancel edit!';
-
-const cssHiddenTime = style({
-    height: '0',
-    visibility: 'collapse'
-})
-
-const cssSwitchLink = style({
-    textDecoration: 'none'
-})
 
 export interface ITimeControls {
     fromHours: HTMLSelectElement;
@@ -27,7 +19,7 @@ export class TimesParagraphWrapper {
     }
 
     hideParagraph() {
-        this.paragraph.classList.add(cssHiddenTime);
+        this.paragraph.classList.add(css.hiddenTime);
     }
 
     getParagraphElement(): HTMLParagraphElement {

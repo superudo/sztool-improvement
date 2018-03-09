@@ -2,13 +2,10 @@ import { TimeTable } from "./TimeTable";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { style } from "typestyle";
 import { ControlSwitcher } from "./ControlSwitcher";
+import { css } from "./ComponentStyles";
 
 const INPUT_BUTTON_SIGN: string ='➽';
 const CANCEL_BUTTON_SIGN: string = '⛔';
-
-const cssSwitchLink = style({
-    textDecoration: 'none'
-})
 
 export class TimeSelector {
     fromTable: TimeTable;
@@ -33,8 +30,15 @@ export class TimeSelector {
         let fromView = fromControl.createDom(this.cancelButton, CANCEL_BUTTON_SIGN);
         let toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
 
-        insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
-        fromView.parentNode.insertBefore(toView, fromView.nextSibling);
+        let controlDiv = document.createElement('div');
+        controlDiv.classList.add(css.controlArea);
+        controlDiv.appendChild(fromView);
+        controlDiv.appendChild(toView);
+
+        insertAfter.parentNode.insertBefore(controlDiv, insertAfter.nextSibling);
+
+        // insertAfter.parentNode.insertBefore(fromView, insertAfter.nextSibling);
+        // fromView.parentNode.insertBefore(toView, fromView.nextSibling);
         new ControlSwitcher().injectOffSwitch(toView.parentElement);
 
         this.fromTime.setTimeCheckCallback(this.checkTimes, this);

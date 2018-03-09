@@ -1,8 +1,5 @@
 import { style } from "typestyle";
-
-const cssSwitchLink = style({
-    textDecoration: 'none'
-})
+import { css, myClass, setTheme } from "./ComponentStyles";
 
 export const USE_CONTROL_ITEM = 'useNewControl';
 
@@ -16,7 +13,7 @@ export class ControlSwitcher {
             e.stopPropagation();
         });
         linkSwitch.innerText = '☑';
-        linkSwitch.classList.add(cssSwitchLink);
+        linkSwitch.classList.add(css.switchLink);
         parent.appendChild(linkSwitch);
     }
         
@@ -24,12 +21,23 @@ export class ControlSwitcher {
         let switchLink = document.createElement('a');
         switchLink.href = '#';
         switchLink.innerText = '☒';
-        switchLink.classList.add(cssSwitchLink);
+        switchLink.classList.add(css.switchLink);
         switchLink.addEventListener('click', (e: Event) => {
             localStorage.removeItem(USE_CONTROL_ITEM);
             window.location.replace(window.location.pathname);
             e.stopPropagation();
         });
         parent.appendChild(switchLink);
+
+        let testText = document.createElement('span');
+        testText.innerText = 'Hello world!';
+        testText.classList.add(myClass);
+        testText.addEventListener('mouseenter', (e: Event) => {
+            setTheme('panda')
+        });
+        testText.addEventListener('mouseleave', (e: Event) => {
+            setTheme('lion')
+        });
+        parent.appendChild(testText);
     }
 }

@@ -1,68 +1,10 @@
 import { TimeSelector } from './TimeSelector';
 import { TimeControlWrapper } from './TimeControlWrapper';
-import { style, media } from 'typestyle';
-import * as csx from "csx";
+import { css } from './ComponentStyles';
 
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
 const HOUR_COLUMNS: number = 4;
-
-const cssClockline = style({
-    backgroundColor: csx.green.toString(),
-    padding: '0px',
-    overflow: 'auto',
-    $nest: {
-        '&>button': {
-            backgroundColor: csx.color('#4caf50').toString(),
-            border: '1px solid ' + csx.green.toString(),
-            color: csx.white.toString(),
-            padding: '0.1em 0.7em',
-            cursor: 'pointer',
-            float: 'left'
-        },
-        '&>button:hover': {
-            backgroundColor: csx.rgb(64, 128, 64).toString()
-        },
-        '&+button': {
-            clear: 'left'
-        },
-        '&>select': {
-            margin: '0.25em auto'
-        }
-    }
-})
-
-const cssOuter = style({
-    backgroundColor: csx.burlywood.toString(),
-    padding: '0.3em',
-    fontFamily: ['Segoe UI', 'Tahoma', 'Geneva', 'Verdana', 'sans-serif'],
-    fontSize: '10pt',
-    overflowY: 'auto',
-    display: 'inline-block'
-})
-
-const cssClockTitle = style({
-    color: csx.white.toString(),
-    backgroundColor: csx.darkgreen.toString(),
-    border: '1px solid ' + csx.green.toString(),
-    fontWeight: 'bold',
-    padding: '0.1em 0.2em',
-    marginBottom: '0.3em'   
-})
-
-const cssHours = style({
-    float: 'left'
-})
-
-const cssMinutes = style({
-    float: 'left',
-    marginLeft: '0.5em'
-})
-
-const cssInputButton = style({
-    float: 'right',
-    margin: '0.2em auto'
-})
 
 export class TimeTable {
     target: TimeControlWrapper;
@@ -73,10 +15,10 @@ export class TimeTable {
 
     createDom(btn: HTMLInputElement, btnValue: string): HTMLElement { 
         let outerDiv = document.createElement('div');
-        outerDiv.classList.add(cssOuter);
+        outerDiv.classList.add(css.outer);
 
         let titleLine = document.createElement('div');
-        titleLine.classList.add(cssClockline, cssClockTitle);
+        titleLine.classList.add(css.clockline, css.clockTitle);
 
         titleLine.appendChild(this.target.hourControl);
         titleLine.appendChild(new Text(':'));
@@ -85,7 +27,7 @@ export class TimeTable {
         if (btn && btn != null) {
             btn.value = (btnValue)? btnValue: '???';
             titleLine.appendChild(btn);
-            btn.classList.add(cssInputButton);
+            btn.classList.add(css.inputButton);
         }
 
         outerDiv.appendChild(titleLine);
@@ -95,7 +37,7 @@ export class TimeTable {
             let hourLine = this.getHourLine(i);
             hoursContainer.appendChild(hourLine);
         }
-        hoursContainer.classList.add(cssHours);
+        hoursContainer.classList.add(css.hours);
         outerDiv.appendChild(hoursContainer);
 
         let minutesContainer = document.createElement('div');
@@ -103,15 +45,15 @@ export class TimeTable {
             let minuteLine = this.getMinuteLine(i);
             minutesContainer.appendChild(minuteLine);
         }
-        minutesContainer.classList.add(cssMinutes);
+        minutesContainer.classList.add(css.minutes);
         outerDiv.appendChild(minutesContainer);
 
         return outerDiv;
     }
 
-   private getMinuteLine(index: number): HTMLElement {
+    private getMinuteLine(index: number): HTMLElement {
         let minuteLine = document.createElement('div');
-        minuteLine.classList.add(cssClockline);
+        minuteLine.classList.add(css.clockline);
         let minuteButton = document.createElement('button');
         let btnValue = this.formatNumber(index * 15);
         minuteButton.innerText = btnValue;;
@@ -127,7 +69,7 @@ export class TimeTable {
 
     private getHourLine(timeRow: number): HTMLElement {
         let hourLine = document.createElement('div');
-        hourLine.classList.add(cssClockline);
+        hourLine.classList.add(css.clockline);
         for (let i = 0; i < HOUR_COLUMNS; ++i) {
             let hourButton = document.createElement('button');
             let btnValue = this.formatNumber(START_HOUR + TIME_ROWS * timeRow + i);
