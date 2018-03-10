@@ -1,56 +1,65 @@
 import { style } from "typestyle";
-import { css } from "../styles/ComponentStyles";
+import { PersistentStyle } from "../styles/PersistentStyle";
 
-const INPUT_BUTTON_TEXT: string = 'Eintragen!';
-const CANCEL_BUTTON_TEXT: string = 'cancel edit!';
+const INPUT_BUTTON_TEXT: string = "Eintragen!";
+const CANCEL_BUTTON_TEXT: string = "cancel edit!";
 
 export interface ITimeControls {
-    fromHours: HTMLSelectElement;
-    toHours: HTMLSelectElement;
-    fromMinutes: HTMLSelectElement;
-    toMinutes: HTMLSelectElement;
+  fromHours: HTMLSelectElement;
+  toHours: HTMLSelectElement;
+  fromMinutes: HTMLSelectElement;
+  toMinutes: HTMLSelectElement;
 }
 
 export class TimesParagraphWrapper {
-    paragraph: HTMLParagraphElement;
+  private paragraph: HTMLParagraphElement;
 
-    constructor(p: HTMLParagraphElement) {
-        this.paragraph = p;
-    }
+  constructor(p: HTMLParagraphElement) {
+    this.paragraph = p;
+  }
 
-    hideParagraph() {
-        this.paragraph.classList.add(css.hiddenTime);
-    }
+  public hideParagraph() {
+    this.paragraph.classList.add(PersistentStyle.hiddenTime);
+  }
 
-    getParagraphElement(): HTMLParagraphElement {
-        return this.paragraph;
-    }
+  public getParagraphElement(): HTMLParagraphElement {
+    return this.paragraph;
+  }
 
-    getSelectControls(): ITimeControls {
-        return {
-            fromHours: document.getElementsByName('from_hh')[0] as HTMLSelectElement, 
-            fromMinutes: document.getElementsByName('from_mm')[0] as HTMLSelectElement,
-            toHours: document.getElementsByName('to_hh')[0] as HTMLSelectElement,
-            toMinutes: document.getElementsByName('to_mm')[0] as HTMLSelectElement
-        };
-    }
+  public getSelectControls(): ITimeControls {
+    return {
+      fromHours: this.findFirstSelect("from_hh"),
+      fromMinutes: this.findFirstSelect("from_mm"),
+      toHours: this.findFirstSelect("to_hh"),
+      toMinutes: this.findFirstSelect("to_mm")
+    };
+  }
 
-    getInputButton(): HTMLInputElement {
-        return this.getButton(INPUT_BUTTON_TEXT);
-    }
+  public getInputButton(): HTMLInputElement {
+    return this.getButton(INPUT_BUTTON_TEXT);
+  }
 
-    getCancelButton(): HTMLInputElement {
-        return this.getButton(CANCEL_BUTTON_TEXT);
-    }
+  public getCancelButton(): HTMLInputElement {
+    return this.getButton(CANCEL_BUTTON_TEXT);
+  }
 
-    private getButton(withValue: string) {
-        let inputChildren = this.paragraph.getElementsByTagName('input');
-        for (let i = 0; i < inputChildren.length; ++i) {
-            if (inputChildren[i].type.toLowerCase() === 'button'
-             && inputChildren[i].value.toLowerCase() === withValue.toLowerCase()) {
-                return inputChildren[i];
-            }
-        }
-        return null;
-    }
+  private findFirstSelect(name: string): HTMLSelectElement {
+      const selectsFound = document.getElementsByName(name);
+      return (selectsFound.length > 0)
+        ? selectsFound[0] as HTMLSelectElement : null;
+  }
+
+  private getButton(withValue: string) {
+    const inputChildren = this.paragraph.getElementsByTagName("input");
+    let buttonFound: HTMLInputElement = null;
+    Array.from(inputChildren).forEach((el: HTMLInputElement) => {
+      if (
+        el.type.toLowerCase() === "button" &&
+        el.value.toLowerCase() === withValue.toLowerCase()
+      ) {
+        buttonFound = el;
+      }
+    });
+    return buttonFound;
+  }
 }

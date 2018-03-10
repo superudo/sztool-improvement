@@ -1,4 +1,4 @@
-import { css } from "../styles/ComponentStyles";
+import { PersistentStyle } from "../styles/PersistentStyle";
 import { ControlSwitcher } from "./ControlSwitcher";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
@@ -40,7 +40,7 @@ export class TimeSelector {
     if (controlDiv === null) {
       throw new Error("App root not found.");
     }
-    controlDiv.classList.add(css.controlArea);
+    controlDiv.classList.add(PersistentStyle.controlArea);
     controlDiv.appendChild(fromView);
     controlDiv.appendChild(toView);
 

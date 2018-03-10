@@ -1,3 +1,4 @@
+/* tslint:disable:no-console max-line-length */
 /**
  * Check if localStorage is supported                       const isSupported: boolean
  * Check if localStorage has an Item                        function hasItem(key: string): boolean
@@ -17,21 +18,19 @@
  */
 export const isSupported: boolean = (() => {
     try {
-        let itemBackup = localStorage.getItem('');
-        localStorage.removeItem('');
-        localStorage.setItem('', itemBackup);
+        const itemBackup = localStorage.getItem("");
+        localStorage.removeItem("");
+        localStorage.setItem("", itemBackup);
         if (itemBackup === null) {
-            localStorage.removeItem('');
-        }
-        else {
-            localStorage.setItem('', itemBackup);
+            localStorage.removeItem("");
+        } else {
+            localStorage.setItem("", itemBackup);
         }
         return true;
-    }
-    catch (e) {
+    } catch (e) {
         return false;
     }
-})()
+})();
 
 /**
  * Check if localStorage has an Item / exists with the give key
@@ -46,21 +45,20 @@ export function hasItem(key: string): boolean {
  * Might be slow !!!
  */
 export function getRemainingSpace(): number {
-    let itemBackup = localStorage.getItem('');
+    const itemBackup = localStorage.getItem("");
     let increase = true;
-    let data = '1';
-    let totalData = '';
-    let trytotalData = '';
+    let data = "1";
+    let totalData = "";
+    let trytotalData = "";
     while (true) {
         try {
             trytotalData = totalData + data;
-            localStorage.setItem('', trytotalData);
+            localStorage.setItem("", trytotalData);
             totalData = trytotalData;
             if (increase) {
                 data += data;
             }
-        } 
-        catch (e) {
+        } catch (e) {
             if (data.length < 2) {
                 break;
             }
@@ -69,7 +67,7 @@ export function getRemainingSpace(): number {
         }
     }
     if (itemBackup === null) {
-        localStorage.removeItem('');
+        localStorage.removeItem("");
     }
     return totalData.length;
 }
@@ -79,26 +77,26 @@ export function getRemainingSpace(): number {
  * Might be slow !!!
  */
 export function getMaximumSpace(): number {
-    let backup = getBackup()
-    localStorage.clear()
-    let max = getRemainingSpace()
-    applyBackup(backup)
-    return max
+    const backup = getBackup();
+    localStorage.clear();
+    const max = getRemainingSpace();
+    applyBackup(backup);
+    return max;
 }
 
 /**
  * This will return the currently used size of localStorage
  */
 export function getUsedSpace(): number {
-    let sum = 0
+    let sum = 0;
 
     for (let i = 0; i < localStorage.length; ++i) {
-        let key = localStorage.key(i)
-        let value = localStorage.getItem(key)
-        sum += key.length + value.length
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        sum += key.length + value.length;
     }
 
-    return sum
+    return sum;
 }
 
 /**
@@ -106,54 +104,55 @@ export function getUsedSpace(): number {
  * @param key
  */
 export function getItemUsedSpace(key: string): number {
-    let value = localStorage.getItem(key)
+    const value = localStorage.getItem(key);
     if (value === null) {
-        return NaN
+        return NaN;
     } else {
-        return key.length + value.length
+        return key.length + value.length;
     }
 }
 
-/** 
- * Associative-array for localStorage holding key->value 
+/**
+ * Associative-array for localStorage holding key->value
  */
-export interface Backup {
-    [index: string]: string
+export interface IBackup {
+    [index: string]: string;
 }
 
 /**
  * This will return a localStorage-backup (Associative-Array key->value)
  */
-export function getBackup(): Backup {
-    let backup: Backup = {}
-
+export function getBackup(): IBackup {
+    const backup: IBackup = {};
     for (let i = 0; i < localStorage.length; ++i) {
-        let key = localStorage.key(i)
-        let value = localStorage.getItem(key)
-        backup[key] = value
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        backup[key] = value;
     }
-
-    return backup
+    return backup;
 }
 
 /**
  * This will apply a localStorage-Backup (Associative-Array key->value)
- * @param backup            associative-array 
+ * @param backup            associative-array
  * @param fClear             optional flag to clear all existing storage first. Default: true
  * @param fOverwriteExisting optional flag to replace existing keys. Default: true
  */
-export function applyBackup(backup: Backup, fClear: boolean = true, fOverwriteExisting: boolean = true) {
-    if (fClear == true) {
-        localStorage.clear()
-    }
-
-    for (let key in backup) {
-        if (fOverwriteExisting === false && backup[key] !== undefined) {
-            continue
+export function applyBackup(
+    backup: IBackup,
+    fClear: boolean = true,
+    fOverwriteExisting: boolean = true) {
+        if (fClear === true) {
+            localStorage.clear();
         }
-        let value = backup[key]
-        localStorage.setItem(key, value)
-    }
+
+        for (const key in backup) {
+            if (fOverwriteExisting === false && backup[key] !== undefined) {
+                continue;
+            }
+            const value = backup[key];
+            localStorage.setItem(key, value);
+        }
 }
 
 /**
@@ -162,21 +161,21 @@ export function applyBackup(backup: Backup, fClear: boolean = true, fOverwriteEx
  * @param fShowMaximumSize optional, flag show maximum size of localStorage. Default: false
  */
 export function consoleInfo(fShowMaximumSize: boolean = false) {
-    let amount = 0
-    let size = 0
+    let amount = 0;
+    let size = 0;
 
     for (let i = 0; i < localStorage.length; ++i) {
-        let key = localStorage.key(i)
-        let value = localStorage.getItem(key);
-        console.log(amount, key, value)
-        size += key.length + value.length
-        amount++
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        console.log(amount, key, value);
+        size += key.length + value.length;
+        amount++;
     }
-    console.log("Total entries:", amount)
-    console.log("Total size:", size)
+    console.log("Total entries:", amount);
+    console.log("Total size:", size);
     if (fShowMaximumSize === true) {
-        let maxSize = getMaximumSpace()
-        console.log("Total size:", maxSize)
+        const maxSize = getMaximumSpace();
+        console.log("Total size:", maxSize);
     }
 }
 
@@ -185,10 +184,11 @@ export function setObject(key: string, value: object) {
 }
 
 export function getObject(key: string) {
-    let value = localStorage.getItem(key);
+    const value = localStorage.getItem(key);
     return value && JSON.parse(value);
 }
 
+/* tslint:disable:max-line-length */
 /*
     // Example
     console.log("LocalStorage supported:", LocalStorage.isSupported)// true - I hope so anyways 😉
@@ -197,9 +197,9 @@ export function getObject(key: string) {
     var backup = LocalStorage.getBackup()                           // creates a backup, we will need it later!
     console.log(JSON.stringify(backup))                             // this is how the backup looks like
     var usedSpace = LocalStorage.getUsedSpace()                     // amount of space used right now
-    console.log("Used Space:", usedSpace)                
+    console.log("Used Space:", usedSpace)
     var maxSpace = LocalStorage.getMaximumSpace()                   // amount of maximum space aviable
-    console.log("Maximum Space:", maxSpace)             
+    console.log("Maximum Space:", maxSpace)
     var remSpace = LocalStorage.getRemainingSpace()                 // amount of remaining space
     console.log("Remaining Space:", remSpace)
     console.log("SpaceCheck", maxSpace === usedSpace + remSpace)    // true

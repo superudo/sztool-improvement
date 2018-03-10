@@ -1,28 +1,28 @@
 import { style } from "typestyle";
-import { css, myClass, setTheme } from "../styles/ComponentStyles";
+import { PersistentStyle } from "../styles/PersistentStyle";
 
-export const USE_CONTROL_ITEM = 'useNewControl';
+export const USE_CONTROL_ITEM = "useNewControl";
 
 export class ControlSwitcher {
-    injectOnSwitch(parent: HTMLElement) {
-        let linkSwitch = document.createElement('a');
-        linkSwitch.href = '#';
-        linkSwitch.addEventListener('click', (e: Event) => {
-            localStorage.setItem(USE_CONTROL_ITEM, 'true');
+    public injectOnSwitch(parent: HTMLElement) {
+        const linkSwitch = document.createElement("a");
+        linkSwitch.href = "#";
+        linkSwitch.addEventListener("click", (e: Event) => {
+            localStorage.setItem(USE_CONTROL_ITEM, "true");
             window.location.replace(window.location.pathname);
             e.stopPropagation();
         });
-        linkSwitch.innerText = '☑';
-        linkSwitch.classList.add(css.switchLink);
+        linkSwitch.innerText = "☑";
+        linkSwitch.classList.add(PersistentStyle.switchLink);
         parent.appendChild(linkSwitch);
     }
-        
-    injectOffSwitch(parent: HTMLElement) {
-        let switchLink = document.createElement('a');
-        switchLink.href = '#';
-        switchLink.innerText = '☒';
-        switchLink.classList.add(css.switchLink);
-        switchLink.addEventListener('click', (e: Event) => {
+
+    public injectOffSwitch(parent: HTMLElement) {
+        const switchLink = document.createElement("a");
+        switchLink.href = "#";
+        switchLink.innerText = "☒";
+        switchLink.classList.add(PersistentStyle.switchLink);
+        switchLink.addEventListener("click", (e: Event) => {
             localStorage.removeItem(USE_CONTROL_ITEM);
             window.location.replace(window.location.pathname);
             e.stopPropagation();
