@@ -7,8 +7,8 @@ const INPUT_BUTTON_SIGN: string = "➽";
 const CANCEL_BUTTON_SIGN: string = "⛔";
 
 export class TimeSelector {
-  fromTable: TimeTable;
-  toTable: TimeTable;
+  public fromTable: TimeTable;
+  public toTable: TimeTable;
   private fromTime: TimeControlWrapper;
   private toTime: TimeControlWrapper;
   private inputButton: HTMLInputElement;
@@ -34,11 +34,11 @@ export class TimeSelector {
       this.cancelButton,
       CANCEL_BUTTON_SIGN
     );
-    let toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
+    const toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
 
-    let controlDiv = document.getElementById(appRootId);
+    const controlDiv = document.getElementById(appRootId);
     if (controlDiv === null) {
-      throw "App root not found.";
+      throw new Error("App root not found.");
     }
     controlDiv.classList.add(css.controlArea);
     controlDiv.appendChild(fromView);
@@ -51,7 +51,7 @@ export class TimeSelector {
   }
 
   private checkTimes(s: TimeSelector) {
-    let from = s.fromTime.getTimeInMinutes();
+    const from = s.fromTime.getTimeInMinutes();
     const to = s.toTime.getTimeInMinutes();
     const isInvalid = from >= to;
     s.fromTime.indicateError(isInvalid);
