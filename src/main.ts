@@ -13,5 +13,6 @@ import * as LocalStorageService from "./environment/LocalStorageService";
   new TimeSelectorApp("app-root")
     .init()
     .run();
+
 })();
 

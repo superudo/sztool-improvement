@@ -1,10 +1,11 @@
-import { normalize, setupPage } from 'csstips';
+import { normalize, setupPage } from "csstips";
 
-import { ControlSwitcher, USE_CONTROL_ITEM } from '../components/ControlSwitcher';
-import { TimeControlWrapper } from '../components/TimeControlWrapper';
-import { TimeSelector } from '../components/TimeSelector';
-import { TimesParagraphWrapper } from '../components/TimesParagraphWrapper';
-import * as LocalStorageService from '../environment/LocalStorageService';
+// tslint:disable-next-line:max-line-length
+import { ControlSwitcher, USE_CONTROL_ITEM } from "../components/ControlSwitcher";
+import { TimeControlWrapper } from "../components/TimeControlWrapper";
+import { TimeSelector } from "../components/TimeSelector";
+import { TimesParagraphWrapper } from "../components/TimesParagraphWrapper";
+import * as LocalStorageService from "../environment/LocalStorageService";
 
 export interface IRunnnable {
   run: () => void;
@@ -20,7 +21,7 @@ export class TimeSelectorApp {
     this.that = this;
   }
 
-  init(): IRunnnable {
+  public init(): IRunnnable {
     if (!LocalStorageService.isSupported) {
       throw new Error("Local storage not supported.");
     }
@@ -29,7 +30,7 @@ export class TimeSelectorApp {
     return this.that;
   }
 
-  run() {
+  public run() {
     if (this.showTimeSelector()) {
       normalize();
       setupPage(this.applicationID);
@@ -53,13 +54,13 @@ export class TimeSelectorApp {
   }
 
   private prepareApplicationRoot(insertAfter: HTMLElement) {
-    let appRoot = document.createElement("div");
+    const appRoot = document.createElement("div");
     appRoot.id = "app-root";
     insertAfter.parentNode.insertBefore(appRoot, insertAfter.nextSibling);
   }
 
   private injectControl() {
-    let controls = this.timesParagraphWrapper.getSelectControls();
+    const controls = this.timesParagraphWrapper.getSelectControls();
     new TimeSelector(
       new TimeControlWrapper(controls.fromHours, controls.fromMinutes),
       new TimeControlWrapper(controls.toHours, controls.toMinutes),
@@ -74,7 +75,7 @@ export class TimeSelectorApp {
   }
 
   private injectControlSwitch(): void {
-    new ControlSwitcher().injectOnSwitch(
+    ControlSwitcher.injectOnSwitch(
       this.timesParagraphWrapper.getParagraphElement()
     );
   }

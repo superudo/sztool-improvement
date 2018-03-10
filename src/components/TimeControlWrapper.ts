@@ -1,12 +1,13 @@
 import * as csx from "csx";
 import { style } from "typestyle";
-import { PersistentStyle } from "../styles/PersistentStyle";
+import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { TimeSelector } from "./TimeSelector";
 
 
 export class TimeControlWrapper {
     public hourControl: HTMLSelectElement;
     public minuteControl: HTMLSelectElement;
+    private styleConfiguration: StyleConfiguration;
 
     constructor(hour: HTMLElement, minute: HTMLElement) {
         if (hour instanceof HTMLSelectElement) {
@@ -15,6 +16,7 @@ export class TimeControlWrapper {
         if (minute instanceof HTMLSelectElement) {
             this.minuteControl = minute as HTMLSelectElement;
         }
+        this.styleConfiguration = new StyleConfiguration();
     }
 
     public setTimeCheckCallback(
@@ -51,11 +53,11 @@ export class TimeControlWrapper {
 
     public indicateError(isError: boolean) {
         if (isError) {
-            this.hourControl.classList.add(PersistentStyle.invalid);
-            this.minuteControl.classList.add(PersistentStyle.invalid);
+            this.styleConfiguration.addStyles(this.hourControl, "invalid");
+            this.styleConfiguration.addStyles(this.minuteControl, "invalid");
         } else {
-            this.hourControl.classList.remove(PersistentStyle.invalid);
-            this.minuteControl.classList.remove(PersistentStyle.invalid);
+            this.styleConfiguration.removeStyles(this.hourControl, "invalid");
+            this.styleConfiguration.removeStyles(this.minuteControl, "invalid");
         }
     }
 

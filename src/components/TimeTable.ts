@@ -1,4 +1,4 @@
-import { PersistentStyle } from "../styles/PersistentStyle";
+import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeSelector } from "./TimeSelector";
 
@@ -8,19 +8,19 @@ const HOUR_COLUMNS: number = 4;
 
 export class TimeTable {
     private target: TimeControlWrapper;
+    private styleConfiguration: StyleConfiguration;
 
     constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
+        this.styleConfiguration = new StyleConfiguration();
     }
 
     public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
         const outerDiv = document.createElement("div");
-        outerDiv.classList.add(PersistentStyle.outer);
+        this.styleConfiguration.addStyles(outerDiv, "outer");
 
         const titleLine = document.createElement("div");
-        titleLine.classList.add(
-            PersistentStyle.clockline,
-            PersistentStyle.clockTitle);
+        this.styleConfiguration.addStyles(titleLine, "clockline", "clockTitle");
 
         titleLine.appendChild(this.target.hourControl);
         titleLine.appendChild(new Text(":"));
@@ -29,7 +29,7 @@ export class TimeTable {
         if (btn && btn != null) {
             btn.value = (btnValue) ? btnValue : "???";
             titleLine.appendChild(btn);
-            btn.classList.add(PersistentStyle.inputButton);
+            this.styleConfiguration.addStyles(btn, "inputButton");
         }
 
         outerDiv.appendChild(titleLine);
@@ -39,7 +39,7 @@ export class TimeTable {
             const hourLine = this.getHourLine(i);
             hoursContainer.appendChild(hourLine);
         }
-        hoursContainer.classList.add(PersistentStyle.hours);
+        this.styleConfiguration.addStyles(hoursContainer, "hours");
         outerDiv.appendChild(hoursContainer);
 
         const minutesContainer = document.createElement("div");
@@ -47,7 +47,7 @@ export class TimeTable {
             const minuteLine = this.getMinuteLine(i);
             minutesContainer.appendChild(minuteLine);
         }
-        minutesContainer.classList.add(PersistentStyle.minutes);
+        this.styleConfiguration.addStyles(minutesContainer, "minutes");
         outerDiv.appendChild(minutesContainer);
 
         return outerDiv;
@@ -55,7 +55,7 @@ export class TimeTable {
 
     private getMinuteLine(index: number): HTMLElement {
         const minuteLine = document.createElement("div");
-        minuteLine.classList.add(PersistentStyle.clockline);
+        this.styleConfiguration.addStyles(minuteLine, "clockline");
         const minuteButton = document.createElement("button");
         const btnValue = this.formatNumber(index * 15);
         minuteButton.innerText = btnValue;
@@ -71,7 +71,7 @@ export class TimeTable {
 
     private getHourLine(timeRow: number): HTMLElement {
         const hourLine = document.createElement("div");
-        hourLine.classList.add(PersistentStyle.clockline);
+        this.styleConfiguration.addStyles(hourLine, "clockline");
         for (let i = 0; i < HOUR_COLUMNS; ++i) {
             const hourButton = document.createElement("button");
             const btnValue = this.formatNumber(

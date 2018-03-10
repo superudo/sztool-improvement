@@ -1,5 +1,5 @@
 import { style } from "typestyle";
-import { PersistentStyle } from "../styles/PersistentStyle";
+import { StyleConfiguration } from "../styles/StyleConfiguration";
 
 const INPUT_BUTTON_TEXT: string = "Eintragen!";
 const CANCEL_BUTTON_TEXT: string = "cancel edit!";
@@ -13,13 +13,15 @@ export interface ITimeControls {
 
 export class TimesParagraphWrapper {
   private paragraph: HTMLParagraphElement;
+    private styleConfiguration: StyleConfiguration;
 
   constructor(p: HTMLParagraphElement) {
     this.paragraph = p;
+    this.styleConfiguration = new StyleConfiguration();
   }
 
   public hideParagraph() {
-    this.paragraph.classList.add(PersistentStyle.hiddenTime);
+      this.styleConfiguration.addStyles(this.paragraph, "hiddenTime");
   }
 
   public getParagraphElement(): HTMLParagraphElement {

@@ -1,27 +1,27 @@
 import { style } from "typestyle";
-import { PersistentStyle } from "../styles/PersistentStyle";
+import { StyleConfiguration } from "../styles/StyleConfiguration";
 
 export const USE_CONTROL_ITEM = "useNewControl";
 
 export class ControlSwitcher {
-    public injectOnSwitch(parent: HTMLElement) {
-        const linkSwitch = document.createElement("a");
-        linkSwitch.href = "#";
-        linkSwitch.addEventListener("click", (e: Event) => {
+    public static injectOnSwitch(parent: HTMLElement) {
+        const switchLink = document.createElement("a");
+        switchLink.href = "#";
+        switchLink.addEventListener("click", (e: Event) => {
             localStorage.setItem(USE_CONTROL_ITEM, "true");
             window.location.replace(window.location.pathname);
             e.stopPropagation();
         });
-        linkSwitch.innerText = "☑";
-        linkSwitch.classList.add(PersistentStyle.switchLink);
-        parent.appendChild(linkSwitch);
+        switchLink.innerText = "☑";
+        new StyleConfiguration().addStyles(switchLink, "switchLink");
+        parent.appendChild(switchLink);
     }
 
-    public injectOffSwitch(parent: HTMLElement) {
+    public static injectOffSwitch(parent: HTMLElement) {
         const switchLink = document.createElement("a");
         switchLink.href = "#";
         switchLink.innerText = "☒";
-        switchLink.classList.add(PersistentStyle.switchLink);
+        new StyleConfiguration().addStyles(switchLink, "switchLink");
         switchLink.addEventListener("click", (e: Event) => {
             localStorage.removeItem(USE_CONTROL_ITEM);
             window.location.replace(window.location.pathname);

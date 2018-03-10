@@ -1,4 +1,4 @@
-import { PersistentStyle } from "../styles/PersistentStyle";
+import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { ControlSwitcher } from "./ControlSwitcher";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
@@ -13,6 +13,7 @@ export class TimeSelector {
   private toTime: TimeControlWrapper;
   private inputButton: HTMLInputElement;
   private cancelButton: HTMLInputElement;
+  private styleConfiguration: StyleConfiguration;
 
   constructor(
     from: TimeControlWrapper,
@@ -24,6 +25,7 @@ export class TimeSelector {
     this.toTime = to;
     this.inputButton = inputButton;
     this.cancelButton = cancelButton;
+    this.styleConfiguration = new StyleConfiguration();
   }
 
   public initApp(appRootId: string): void {
@@ -40,11 +42,11 @@ export class TimeSelector {
     if (controlDiv === null) {
       throw new Error("App root not found.");
     }
-    controlDiv.classList.add(PersistentStyle.controlArea);
+    this.styleConfiguration.addStyles(controlDiv, "controlArea");
     controlDiv.appendChild(fromView);
     controlDiv.appendChild(toView);
 
-    new ControlSwitcher().injectOffSwitch(toView.parentElement);
+    ControlSwitcher.injectOffSwitch(toView.parentElement);
 
     this.fromTime.setTimeCheckCallback(this.checkTimes, this);
     this.toTime.setTimeCheckCallback(this.checkTimes, this);
