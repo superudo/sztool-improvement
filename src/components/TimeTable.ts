@@ -1,6 +1,6 @@
 import { TimeSelector } from './TimeSelector';
 import { TimeControlWrapper } from './TimeControlWrapper';
-import { css } from './ComponentStyles';
+import { css } from '../styles/ComponentStyles';
 
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;

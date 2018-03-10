@@ -1,5 +1,5 @@
 import { style } from "typestyle";
-import { css, myClass, setTheme } from "./ComponentStyles";
+import { css, myClass, setTheme } from "../styles/ComponentStyles";
 
 export const USE_CONTROL_ITEM = 'useNewControl';
 

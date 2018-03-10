@@ -2,7 +2,7 @@ import { TimeTable } from "./TimeTable";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { style } from "typestyle";
 import { ControlSwitcher } from "./ControlSwitcher";
-import { css } from "./ComponentStyles";
+import { css } from "../styles/ComponentStyles";
 
 const INPUT_BUTTON_SIGN: string ='➽';
 const CANCEL_BUTTON_SIGN: string = '⛔';

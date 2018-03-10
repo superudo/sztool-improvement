@@ -1,7 +1,7 @@
 import { TimeSelector } from './TimeSelector';
 import { style } from 'typestyle';
 import * as csx from 'csx';
-import { css } from './ComponentStyles';
+import { css } from '../styles/ComponentStyles';
 
 export class TimeControlWrapper {
     hourControl: HTMLSelectElement;

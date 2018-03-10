@@ -180,6 +180,15 @@ export function consoleInfo(fShowMaximumSize: boolean = false) {
     }
 }
 
+export function setObject(key: string, value: object) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+export function getObject(key: string) {
+    let value = localStorage.getItem(key);
+    return value && JSON.parse(value);
+}
+
 /*
     // Example
     console.log("LocalStorage supported:", LocalStorage.isSupported)// true - I hope so anyways 😉

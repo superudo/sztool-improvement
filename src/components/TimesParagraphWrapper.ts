@@ -1,5 +1,5 @@
 import { style } from "typestyle";
-import { css } from "./ComponentStyles";
+import { css } from "../styles/ComponentStyles";
 
 const INPUT_BUTTON_TEXT: string = 'Eintragen!';
 const CANCEL_BUTTON_TEXT: string = 'cancel edit!';

@@ -36,6 +36,19 @@ export const myClass = style({
 });
 
 export namespace css {
+    export const overlay = style({
+        width: '100%',
+        height: '100%',
+        position: 'absolute',
+        top: '0',
+        left: '0'
+    });
+
+    export const parentOfOverlay = style({
+        position: 'relative',
+        overflow: 'auto'
+    });
+
     export const controlArea = style(
         csstips.content,
         {
