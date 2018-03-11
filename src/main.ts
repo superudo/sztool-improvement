@@ -1,4 +1,5 @@
 import { TimeSelectorApp } from "./app/TimeSelectorApp";
+import { StyleEditor } from "./components/StyleEditor";
 import * as LocalStorageService from "./environment/LocalStorageService";
 
 (function main() {
@@ -13,6 +14,8 @@ import * as LocalStorageService from "./environment/LocalStorageService";
   new TimeSelectorApp("app-root")
     .init()
     .run();
+
+  new StyleEditor("test").init().run();
 
 })();
 

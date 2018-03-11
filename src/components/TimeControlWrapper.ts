@@ -1,10 +1,11 @@
-import * as csx from "csx";
+import { important, red } from "csx";
 import { style } from "typestyle";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { TimeSelector } from "./TimeSelector";
 
 
-export class TimeControlWrapper {
+export class TimeControlWrapper implements IStylesheetProvider {
     public hourControl: HTMLSelectElement;
     public minuteControl: HTMLSelectElement;
     private styleConfiguration: StyleConfiguration;
@@ -16,9 +17,20 @@ export class TimeControlWrapper {
         if (minute instanceof HTMLSelectElement) {
             this.minuteControl = minute as HTMLSelectElement;
         }
-        this.styleConfiguration = new StyleConfiguration();
+        this.styleConfiguration = new StyleConfiguration(this);
     }
 
+    public getProviderName() {
+        return "timecontrolwrapper";
+    }
+
+    public getDefaultStylesheet() {
+        return {
+            invalid: style({
+                color: important(red.toString())
+            })
+        };
+    }
     public setTimeCheckCallback(
         callback: (observer: TimeSelector) => void, observer: TimeSelector) {
         this.hourControl.addEventListener("change", (e: Event) => {

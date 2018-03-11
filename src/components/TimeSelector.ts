@@ -1,3 +1,6 @@
+import * as csstips from "csstips";
+import { style } from "typestyle";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { ControlSwitcher } from "./ControlSwitcher";
 import { TimeControlWrapper } from "./TimeControlWrapper";
@@ -6,7 +9,7 @@ import { TimeTable } from "./TimeTable";
 const INPUT_BUTTON_SIGN: string = "➽";
 const CANCEL_BUTTON_SIGN: string = "⛔";
 
-export class TimeSelector {
+export class TimeSelector implements IStylesheetProvider {
   public fromTable: TimeTable;
   public toTable: TimeTable;
   private fromTime: TimeControlWrapper;
@@ -25,7 +28,30 @@ export class TimeSelector {
     this.toTime = to;
     this.inputButton = inputButton;
     this.cancelButton = cancelButton;
-    this.styleConfiguration = new StyleConfiguration();
+    this.styleConfiguration = new StyleConfiguration(this);
+  }
+
+  public getProviderName() {
+    return "timeselector";
+  }
+
+  public getDefaultStylesheet() {
+    return {
+      controlArea: style(csstips.content, {
+        fontFamily: StyleConfiguration.getFontFamily(),
+        fontSize: "11pt",
+        $nest: {
+          select: {
+            fontFamily: StyleConfiguration.getFontFamily(),
+            fontSize: "10pt"
+          },
+          input: {
+            fontFamily: StyleConfiguration.getFontFamily(),
+            fontSize: "9pt"
+          }
+        }
+      })
+    };
   }
 
   public initApp(appRootId: string): void {

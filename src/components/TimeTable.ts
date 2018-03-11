@@ -1,3 +1,7 @@
+import * as csstips from "csstips";
+import * as csx from "csx";
+import { style } from "typestyle";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeSelector } from "./TimeSelector";
@@ -6,13 +10,72 @@ const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
 const HOUR_COLUMNS: number = 4;
 
-export class TimeTable {
+export class TimeTable implements IStylesheetProvider {
     private target: TimeControlWrapper;
     private styleConfiguration: StyleConfiguration;
 
     constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
-        this.styleConfiguration = new StyleConfiguration();
+        this.styleConfiguration = new StyleConfiguration(this);
+    }
+
+    public getProviderName() {
+        return "timetable";
+    }
+
+    public getDefaultStylesheet() {
+        return {
+            clockline: style({
+                backgroundColor: csx.green.toString(),
+                padding: 0,
+                overflow: "auto",
+                $nest: {
+                  "&>button": {
+                    backgroundColor: csx.color("#4caf50").toString(),
+                    border: "1px solid " + csx.green.toString(),
+                    color: csx.white.toString(),
+                    padding: "0.1em 0.7em",
+                    cursor: "pointer",
+                    float: "left"
+                  },
+                  "&>button:hover": {
+                    backgroundColor: csx.rgb(64, 128, 64).toString()
+                  },
+                  "&+button": {
+                    clear: "left"
+                  },
+                  "&>select": {
+                    margin: "0.25em auto"
+                  }
+                }
+              }),
+              outer: style(csstips.inlineBlock, {
+                backgroundColor: csx.burlywood.toString(),
+                padding: csx.em(0.3),
+                fontFamily: StyleConfiguration.getFontFamily(),
+                fontSize: "10pt",
+                overflowY: "auto"
+              }),
+            clockTitle: style({
+                color: csx.white.toString(),
+                backgroundColor: csx.darkgreen.toString(),
+                border: "1px solid " + csx.green.toString(),
+                fontWeight: "bold",
+                padding: "0.1em 0.2em",
+                marginBottom: "0.3em"
+              }),
+             hours: style({
+                float: "left"
+              }),
+              minutes: style({
+                float: "left",
+                marginLeft: "0.5em"
+              }),
+              inputButton: style({
+                float: "right",
+                margin: "0.2em auto"
+              })
+          };
     }
 
     public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {

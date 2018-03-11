@@ -1,8 +1,25 @@
+import { none } from "csstips/lib";
 import { style } from "typestyle";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 
 export const USE_CONTROL_ITEM = "useNewControl";
 
+class ControlSwitcherStyle implements IStylesheetProvider {
+    public getProviderName() {
+        return "controlswitcher";
+    }
+
+    public getDefaultStylesheet() {
+        return {
+            switchLink: style({
+                textDecoration: none
+            })
+        };
+    }
+}
+
+// tslint:disable-next-line:max-classes-per-file
 export class ControlSwitcher {
     public static injectOnSwitch(parent: HTMLElement) {
         const switchLink = document.createElement("a");
@@ -13,7 +30,7 @@ export class ControlSwitcher {
             e.stopPropagation();
         });
         switchLink.innerText = "☑";
-        new StyleConfiguration().addStyles(switchLink, "switchLink");
+        this.styleConfiguration.addStyles(switchLink, "switchLink");
         parent.appendChild(switchLink);
     }
 
@@ -21,7 +38,7 @@ export class ControlSwitcher {
         const switchLink = document.createElement("a");
         switchLink.href = "#";
         switchLink.innerText = "☒";
-        new StyleConfiguration().addStyles(switchLink, "switchLink");
+        this.styleConfiguration.addStyles(switchLink, "switchLink");
         switchLink.addEventListener("click", (e: Event) => {
             localStorage.removeItem(USE_CONTROL_ITEM);
             window.location.replace(window.location.pathname);
@@ -29,4 +46,7 @@ export class ControlSwitcher {
         });
         parent.appendChild(switchLink);
     }
+
+    private static styleConfiguration =
+        new StyleConfiguration(new ControlSwitcherStyle());
 }

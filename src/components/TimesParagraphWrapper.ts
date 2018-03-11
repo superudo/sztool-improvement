@@ -1,4 +1,5 @@
 import { style } from "typestyle";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 
 const INPUT_BUTTON_TEXT: string = "Eintragen!";
@@ -11,13 +12,26 @@ export interface ITimeControls {
   toMinutes: HTMLSelectElement;
 }
 
-export class TimesParagraphWrapper {
+export class TimesParagraphWrapper implements IStylesheetProvider {
   private paragraph: HTMLParagraphElement;
     private styleConfiguration: StyleConfiguration;
 
   constructor(p: HTMLParagraphElement) {
     this.paragraph = p;
-    this.styleConfiguration = new StyleConfiguration();
+    this.styleConfiguration = new StyleConfiguration(this);
+  }
+
+  public getProviderName() {
+    return "timesparagraphwrapper";
+  }
+
+  public getDefaultStylesheet() {
+    return {
+      hiddenTime: style({
+        height: "0",
+        visibility: "collapse"
+      })
+    };
   }
 
   public hideParagraph() {
