@@ -1,8 +1,8 @@
-import { AbstractComponent } from "./AbstractComponent";
+import { em, lightgray, percent } from "csx/lib";
 import { style } from "typestyle/lib";
-import { percent, lightgray, em } from "csx/lib";
-import { ElementFactory } from "./ElementFactory";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { AbstractComponent } from "./AbstractComponent";
+import { ElementFactory } from "./ElementFactory";
 
 export class OverlayControl extends AbstractComponent {
     private stlyeConfig: StyleConfiguration;
@@ -13,7 +13,6 @@ export class OverlayControl extends AbstractComponent {
     }
 
     public renderDOM(div: HTMLElement): void {
-        this.stlyeConfig.addStyles(div.parentElement, "parentDiv");
         this.stlyeConfig.addStyles(div, "appContainer");
         div.appendChild(ElementFactory.div()
             .usingStyleConfig(this.stlyeConfig)
@@ -22,10 +21,6 @@ export class OverlayControl extends AbstractComponent {
 
     public getDefaultStylesheet(): any {
         return {
-            parentDiv: style({
-                position: "relative",
-                overflow: "auto"
-            }),
             appContainer: style({
                 zIndex: 100,
                 opacity: 0,

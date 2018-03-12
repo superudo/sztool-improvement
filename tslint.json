@@ -11,6 +11,7 @@
         "no-consecutive-blank-lines": false,
         "trailing-comma": false,
         "object-literal-sort-keys": false,
+        "object-literal-key-quotes": false,
         "no-console": {
             "severity": "warning",
             "options": [

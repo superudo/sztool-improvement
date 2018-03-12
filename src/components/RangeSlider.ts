@@ -1,12 +1,12 @@
 import { ColorHelper, em, lightblue, percent } from "csx/lib";
-import { style } from "typestyle";
+import { cssRaw, style } from "typestyle";
+import { IInitializable } from "../interfaces/IInitializable";
+import { IObservable } from "../interfaces/IObservable";
+import { IObserver } from "../interfaces/IObserver";
 import { IRunnable } from "../interfaces/IRunnable";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
-import { IObserver } from "../interfaces/IObserver";
-import { IObservable } from "../interfaces/IObservable";
-import { IInitializable } from "../interfaces/IInitializable";
 
 export interface IRangeSliderConfig {
   value: number;
@@ -76,7 +76,7 @@ export class RangeSlider extends AbstractComponent implements IObservable {
     div.appendChild(
       ElementFactory.div()
         .usingStyleConfig(this.styleConfig)
-        .withStyles("slidercontainer")
+        .withStyles("slidercontainer", "slider")
         .withChildren(
             this.range,
             this.text)
@@ -117,7 +117,8 @@ export class RangeSlider extends AbstractComponent implements IObservable {
         $nest: {
           "&>input[type=range]": {
             marginRight: em(0.35),
-            width: em(6)
+            width: em(6),
+            height: em(1.4),
           },
           "&>input[type=text]": {
             fontSize: percent(90),
@@ -125,7 +126,97 @@ export class RangeSlider extends AbstractComponent implements IObservable {
             marginRight: 0
           }
         }
-      })
+      }),
+/*
+      slider: cssRaw(`
+      input[type=range] {
+        -webkit-appearance: none;
+        width: 100%;
+        margin: 5px 0;
+        background-color: transparent;
+      }
+      input[type=range]:focus {
+        outline: none;
+      }
+      input[type=range]::-webkit-slider-runnable-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        background: #008000;
+        border-radius: 2px;
+        border: 0.1px solid #010101;
+      }
+      input[type=range]::-webkit-slider-thumb {
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        border: 1px solid #000000;
+        height: 12px;
+        width: 12px;
+        border-radius: 6px;
+        background: #ffffff;
+        cursor: pointer;
+        -webkit-appearance: none;
+        margin-top: -5.1px;
+      }
+      input[type=range]:focus::-webkit-slider-runnable-track {
+        background: #00b300;
+      }
+      input[type=range]::-moz-range-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        background: #008000;
+        border-radius: 2px;
+        border: 0.1px solid #010101;
+      }
+      input[type=range]::-moz-range-thumb {
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        border: 1px solid #000000;
+        height: 12px;
+        width: 12px;
+        border-radius: 6px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      input[type=range]::-ms-track {
+        width: 100%;
+        height: 2px;
+        cursor: pointer;
+        background: transparent;
+        border-color: transparent;
+        color: transparent;
+      }
+      input[type=range]::-ms-fill-lower {
+        background: #004d00;
+        border: 0.1px solid #010101;
+        border-radius: 4px;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      }
+      input[type=range]::-ms-fill-upper {
+        background: #008000;
+        border: 0.1px solid #010101;
+        border-radius: 4px;
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+      }
+      input[type=range]::-ms-thumb {
+        box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0d0d0d;
+        border: 1px solid #000000;
+        height: 12px;
+        width: 12px;
+        border-radius: 6px;
+        background: #ffffff;
+        cursor: pointer;
+        height: 2px;
+      }
+      input[type=range]:focus::-ms-fill-lower {
+        background: #008000;
+      }
+      input[type=range]:focus::-ms-fill-upper {
+        background: #00b300;
+      }
+      `)
+*/
     };
   }
 

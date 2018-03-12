@@ -1,14 +1,14 @@
 import * as csstips from "csstips";
+import { background, ColorHelper, important, rgb } from "csx";
 import * as csx from "csx";
-import { important, rgb, ColorHelper, background } from "csx";
 import { percent } from "csx/lib";
 import { style } from "typestyle";
+import * as LocalStorageService from "../environment/LocalStorageService";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { IStyleEditorValues } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeSelector } from "./TimeSelector";
-import { IStyleEditorValues } from "./StyleEditor";
-import * as LocalStorageService from "../environment/LocalStorageService";
 
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
@@ -18,6 +18,12 @@ const DARKEN_BY_PERCENT = 5;
 const DESATURATE_BY_PERCENT = 70;
 
 const COLOR_CONFIG_STORE = "time-table-color-config";
+const DEFAULT_COLORS = {
+    "Background": {r: 222, g: 184, b: 35},
+    "Button BG": {r: 0, g: 128, b: 0},
+    "Button Text": {r: 255, g: 255, b: 255},
+    "Time bar": {r: 0, g: 100, b: 0},
+  };
 
 export class TimeTable implements IStylesheetProvider {
     private target: TimeControlWrapper;
@@ -27,23 +33,12 @@ export class TimeTable implements IStylesheetProvider {
     constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
         this.styleConfiguration = new StyleConfiguration(this);
-        this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE) || 
-            {
-                "Background": {r: 222, g: 184, b: 35},
-                "Button BG": {r: 0, g: 128, b: 0},
-                "Button Text": {r: 255, g: 255, b: 255},
-                "Time bar": {r: 0, g: 100, b: 0},
-              };
+        this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE)
+            || DEFAULT_COLORS;
     }
 
     public getProviderName() {
         return "timetable";
-    }
-
-    private getCssColorFor(element: "Background" | "Button BG" | "Button Text" | "Time bar"): ColorHelper {
-        return rgb(this.colorValues[element].r, 
-            this.colorValues[element].g, 
-            this.colorValues[element].b);
     }
 
     public getDefaultStylesheet() {
@@ -54,7 +49,8 @@ export class TimeTable implements IStylesheetProvider {
                 overflow: "auto",
                 $nest: {
                   "&>button": {
-                    border: "1px solid " + this.getCssColorFor("Time bar").toString(),
+                    border: "1px solid "
+                        + this.getCssColorFor("Time bar").toString(),
                     color: csx.white.toString(),
                     padding: "0.1em 0.7em",
                     cursor: "pointer",
@@ -69,11 +65,14 @@ export class TimeTable implements IStylesheetProvider {
                 }
               }),
               minuteButton: style({
-                backgroundColor: this.getCssColorFor("Button BG").darken(percent(DARKEN_BY_PERCENT)).toString(),
+                backgroundColor: this.getCssColorFor("Button BG")
+                    .darken(percent(DARKEN_BY_PERCENT)).toString(),
                 $nest: {
                     "&:hover": {
-                        backgroundColor: this.getCssColorFor("Button BG").darken(percent(DARKEN_BY_PERCENT))
-                            .desaturate(percent(DESATURATE_BY_PERCENT)).toString(),
+                        backgroundColor: this.getCssColorFor("Button BG")
+                            .darken(percent(DARKEN_BY_PERCENT))
+                            .desaturate(percent(DESATURATE_BY_PERCENT))
+                            .toString(),
                       }
                 }
               }),
@@ -91,12 +90,14 @@ export class TimeTable implements IStylesheetProvider {
                 padding: csx.em(0.3),
                 fontFamily: StyleConfiguration.getFontFamily(),
                 fontSize: "10pt",
+                position: "relative",
                 overflowY: "auto"
               }),
             clockTitle: style({
                 color: csx.white.toString(),
-                backgroundColor: csx.darkgreen.toString(),
-                border: "1px solid " + csx.green.toString(),
+                backgroundColor: this.getCssColorFor("Time bar").toString(),
+                border: "1px solid " + this.getCssColorFor("Time bar")
+                    .darken(percent(10)).toString(),
                 fontWeight: "bold",
                 padding: "0.1em 0.2em",
                 marginBottom: "0.3em"
@@ -162,6 +163,13 @@ export class TimeTable implements IStylesheetProvider {
             this.colorValues = values;
             LocalStorageService.setObject(COLOR_CONFIG_STORE, this.colorValues);
         }
+    }
+
+    private getCssColorFor(element:
+        "Background" | "Button BG" | "Button Text" | "Time bar"): ColorHelper {
+        return rgb(this.colorValues[element].r,
+            this.colorValues[element].g,
+            this.colorValues[element].b);
     }
 
     private getMinuteLine(index: number): HTMLElement {

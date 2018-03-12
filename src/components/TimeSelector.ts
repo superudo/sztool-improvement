@@ -1,14 +1,17 @@
 import * as csstips from "csstips";
+import { percent } from "csx/lib";
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
-import { ControlSwitcher, CONTROL_ITEM_CONFIG, USE_CONTROL_ITEM, CONTROL_ITEM_NEW } from "./ControlSwitcher";
+import { CONTROL_ITEM_CONFIG,
+  CONTROL_ITEM_NEW,
+  ControlSwitcher,
+  USE_CONTROL_ITEM } from "./ControlSwitcher";
+import { ElementFactory } from "./ElementFactory";
+import { OverlayControl } from "./OverlayControl";
+import { IStyleEditorValues, StyleEditor } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
-import { ElementFactory } from "./ElementFactory";
-import { StyleEditor, IStyleEditorValues } from "./StyleEditor";
-import { percent } from "csx/lib";
-import { OverlayControl } from "./OverlayControl";
 
 const INPUT_BUTTON_SIGN: string = "➽";
 const CANCEL_BUTTON_SIGN: string = "⛔";
@@ -41,28 +44,9 @@ export class TimeSelector implements IStylesheetProvider {
 
   public getDefaultStylesheet() {
     return {
-      timeControlOverlay: style({
-        position: "absolute",
-        width: percent(100),
-        height: percent(100),
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        opacity: 0
-      }),
       controlArea: style(csstips.content, {
         fontFamily: StyleConfiguration.getFontFamily(),
-        fontSize: "11pt",
-        $nest: {
-          select: {
-            fontFamily: StyleConfiguration.getFontFamily(),
-            fontSize: "10pt"
-          },
-          input: {
-            fontFamily: StyleConfiguration.getFontFamily(),
-            fontSize: "9pt"
-          }
-        }
+        fontSize: "10pt",
       })
     };
   }
@@ -104,7 +88,7 @@ export class TimeSelector implements IStylesheetProvider {
     const rootID = "time-control-config";
     const targetDiv = ElementFactory.div().withID(rootID).create();
     viewRight.insertBefore(targetDiv, viewRight.firstChild);
-    
+
     const myValues = this.fromTable.getColorValues();
     new StyleEditor(rootID)
       .init(myValues)

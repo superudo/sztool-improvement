@@ -1,7 +1,11 @@
 import { normalize, setupPage } from "csstips";
 
 // tslint:disable-next-line:max-line-length
-import { ControlSwitcher, USE_CONTROL_ITEM, CONTROL_ITEM_NEW, CONTROL_ITEM_ORIGINAL, CONTROL_ITEM_CONFIG } from "../components/ControlSwitcher";
+import { CONTROL_ITEM_CONFIG,
+  CONTROL_ITEM_NEW,
+  CONTROL_ITEM_ORIGINAL,
+  ControlSwitcher,
+  USE_CONTROL_ITEM } from "../components/ControlSwitcher";
 import { TimeControlWrapper } from "../components/TimeControlWrapper";
 import { TimeSelector } from "../components/TimeSelector";
 import { TimesParagraphWrapper } from "../components/TimesParagraphWrapper";
@@ -61,8 +65,10 @@ export class TimeSelectorApp {
 
   private injectControl() {
     const controls = this.timesParagraphWrapper.getSelectControls();
-    const fromControl = new TimeControlWrapper(controls.fromHours, controls.fromMinutes);
-    const toControl = new TimeControlWrapper(controls.toHours, controls.toMinutes);
+    const fromControl =
+      new TimeControlWrapper(controls.fromHours, controls.fromMinutes);
+    const toControl =
+      new TimeControlWrapper(controls.toHours, controls.toMinutes);
     new TimeSelector(
       fromControl, toControl,
       this.timesParagraphWrapper.getInputButton(),
@@ -73,7 +79,7 @@ export class TimeSelectorApp {
   }
 
   private showTimeSelector(): boolean {
-    return LocalStorageService.hasItem(USE_CONTROL_ITEM) 
+    return LocalStorageService.hasItem(USE_CONTROL_ITEM)
       && localStorage.getItem(USE_CONTROL_ITEM) !== CONTROL_ITEM_ORIGINAL;
   }
 
