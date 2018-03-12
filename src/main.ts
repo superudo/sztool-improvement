@@ -15,7 +15,6 @@ import * as LocalStorageService from "./environment/LocalStorageService";
     .init()
     .run();
 
-  new StyleEditor("test").init().run();
-
+  // new StyleEditor("test").init({r: 200, g: 200, b: 42}).run();
 })();
 

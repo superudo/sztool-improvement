@@ -3,6 +3,16 @@ import { IRunnable } from "../interfaces/IRunnable";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 
+export interface IObserver {
+    receiveNotification<T>(message: T): void;
+}
+
+export interface IObservable {
+    registerObserver(observer: IObserver): void;
+    removeObserver(observer: IObserver): void;
+    notifyObservers(): void;
+}
+
 export abstract class AbstractComponent
     implements IComponent, IRunnable, IStylesheetProvider {
 

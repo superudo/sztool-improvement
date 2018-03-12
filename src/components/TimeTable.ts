@@ -1,5 +1,7 @@
 import * as csstips from "csstips";
 import * as csx from "csx";
+import { important } from "csx";
+import { percent } from "csx/lib";
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
@@ -9,6 +11,9 @@ import { TimeSelector } from "./TimeSelector";
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
 const HOUR_COLUMNS: number = 4;
+
+const BUTTON_BACKGROUND_HRS = csx.color("#4caf50");
+const BUTTON_BACKGROUND_MIN = BUTTON_BACKGROUND_HRS.darken(percent(5));
 
 export class TimeTable implements IStylesheetProvider {
     private target: TimeControlWrapper;
@@ -31,15 +36,11 @@ export class TimeTable implements IStylesheetProvider {
                 overflow: "auto",
                 $nest: {
                   "&>button": {
-                    backgroundColor: csx.color("#4caf50").toString(),
                     border: "1px solid " + csx.green.toString(),
                     color: csx.white.toString(),
                     padding: "0.1em 0.7em",
                     cursor: "pointer",
                     float: "left"
-                  },
-                  "&>button:hover": {
-                    backgroundColor: csx.rgb(64, 128, 64).toString()
                   },
                   "&+button": {
                     clear: "left"
@@ -47,6 +48,24 @@ export class TimeTable implements IStylesheetProvider {
                   "&>select": {
                     margin: "0.25em auto"
                   }
+                }
+              }),
+              minuteButton: style({
+                backgroundColor: BUTTON_BACKGROUND_MIN.toString(),
+                $nest: {
+                    "&:hover": {
+                        backgroundColor: BUTTON_BACKGROUND_MIN
+                            .desaturate(percent(20)).toString(),
+                      }
+                }
+              }),
+              hourButton: style({
+                backgroundColor: BUTTON_BACKGROUND_HRS.toString(),
+                $nest: {
+                    "&:hover": {
+                        backgroundColor: BUTTON_BACKGROUND_HRS
+                            .desaturate(percent(20)).toString(),
+                      }
                 }
               }),
               outer: style(csstips.inlineBlock, {
@@ -124,6 +143,7 @@ export class TimeTable implements IStylesheetProvider {
         minuteButton.innerText = btnValue;
         minuteButton.value = btnValue;
         minuteButton.type = "button";
+        this.styleConfiguration.addStyles(minuteButton, "minuteButton");
         minuteButton.addEventListener("click", (e: Event) => {
             this.changeMinutes(e);
             e.stopPropagation();
@@ -142,6 +162,7 @@ export class TimeTable implements IStylesheetProvider {
             hourButton.innerText = btnValue;
             hourButton.value = btnValue;
             hourButton.type = "button";
+            this.styleConfiguration.addStyles(hourButton, "hourButton");
             hourButton.addEventListener("click", (e: Event) => {
                 this.changeHours(e);
                 e.stopPropagation();
