@@ -15,6 +15,13 @@ import * as LocalStorageService from "./environment/LocalStorageService";
     .init()
     .run();
 
-  // new StyleEditor("test").init({r: 200, g: 200, b: 42}).run();
+  new StyleEditor("test").init(
+    {
+      "Background": {r: 100, g: 200, b: 42},
+      "Button BG": {r: 100, g: 200, b: 50},
+      "Button Text": {r: 50, g: 100, b: 10},
+      "Time bar": {r: 2, g: 20, b: 200},
+    }
+  ).run();
 })();
 

@@ -2,8 +2,10 @@ import { ColorHelper, em, lightblue, percent } from "csx/lib";
 import { style } from "typestyle";
 import { IRunnable } from "../interfaces/IRunnable";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
-import { AbstractComponent, IObservable, IObserver } from "./AbstractComponent";
+import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
+import { IObserver } from "../interfaces/IObserver";
+import { IObservable } from "../interfaces/IObservable";
 
 export interface IRangeSliderConfig {
   value: number;
@@ -57,15 +59,14 @@ export class RangeSlider extends AbstractComponent implements IObservable {
       .create() as HTMLInputElement;
 
     this.range.addEventListener("input", (e: Event) => {
-      this.text.value = (e.srcElement as HTMLInputElement).value;
+      this.text.value = (e.target as HTMLInputElement).value;
       this.notifyObservers();
       e.stopPropagation();
     });
 
     this.text.addEventListener("blur", (e: Event) => {
-      let currentValue = (e.srcElement as HTMLInputElement).valueAsNumber;
-      currentValue = Math.max(this.min, currentValue);
-      currentValue = Math.min(currentValue, this.max);
+      let currentValue = (e.target as HTMLInputElement).valueAsNumber;
+      currentValue = this.assertNumberInRange(currentValue);
       this.range.value = currentValue.toString();
       this.range.dispatchEvent(new Event("input"));
       e.stopPropagation();
@@ -90,6 +91,13 @@ export class RangeSlider extends AbstractComponent implements IObservable {
     return super.init();
   }
 
+  public setValue(v: number) {
+    const ranged = this.assertNumberInRange(v);
+    this.text.value = ranged.toString();
+    this.range.value = ranged.toString();
+    this.notifyObservers();
+  }
+
   public getCurrentValue(): number {
     return this.range.valueAsNumber;
   }
@@ -107,8 +115,8 @@ export class RangeSlider extends AbstractComponent implements IObservable {
             width: em(6)
           },
           "&>input[type=text]": {
-            height: em(1),
-            width: em(2),
+            fontSize: percent(90),
+            width: em(2.25),
             marginRight: 0
           }
         }
@@ -118,5 +126,9 @@ export class RangeSlider extends AbstractComponent implements IObservable {
 
   public getProviderName(): string {
     return this.rootID;
+  }
+
+  private assertNumberInRange(v: number): number {
+    return Math.min(Math.max(this.min, v), this.max);
   }
 }

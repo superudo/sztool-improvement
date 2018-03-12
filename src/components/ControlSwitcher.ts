@@ -5,6 +5,9 @@ import { ElementFactory } from "./ElementFactory";
 
 export const USE_CONTROL_ITEM = "useNewControl";
 
+const ON_SYMBOL = "◉";
+const OFF_SYMBOL = "◎";
+
 class ControlSwitcherStyle implements IStylesheetProvider {
   public getProviderName() {
     return "controlswitcher";

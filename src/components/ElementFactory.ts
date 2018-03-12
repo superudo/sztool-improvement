@@ -131,6 +131,7 @@ export class ElementFactory
     if (tagName) {
       factory.tagName = tagName;
     }
+    factory.children = [];
     return factory;
   }
 
@@ -192,7 +193,9 @@ export class ElementFactory
   }
 
   public withChildren(...children: any[]) {
-    this.children = children;
+    for (const child of children) {
+      this.children.push(child);
+    }
     return this;
   }
 
