@@ -1,5 +1,5 @@
 import { TimeSelectorApp } from "./app/TimeSelectorApp";
-import { StyleEditor } from "./components/StyleEditor";
+import { StyleEditor, IStyleEditorValues } from "./components/StyleEditor";
 import * as LocalStorageService from "./environment/LocalStorageService";
 
 (function main() {
@@ -15,6 +15,7 @@ import * as LocalStorageService from "./environment/LocalStorageService";
     .init()
     .run();
 
+/*
   new StyleEditor("test").init(
     {
       "Background": {r: 100, g: 200, b: 42},
@@ -22,6 +23,15 @@ import * as LocalStorageService from "./environment/LocalStorageService";
       "Button Text": {r: 50, g: 100, b: 10},
       "Time bar": {r: 2, g: 20, b: 200},
     }
-  ).run();
+  )
+  .whenOk((info?: IStyleEditorValues) => {
+    const v = (info as IStyleEditorValues);
+    console.log("OK called with values:", v);
+  })
+  .whenCancel(() => {
+    console.log("Cancel called.");
+  })
+  .run();
+*/  
 })();
 

@@ -7,13 +7,9 @@ import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
 import { RangeSlider } from "./RangeSlider";
 import { IObserver } from "../interfaces/IObserver";
-
-interface IRGBValue {
-  r: number;
-  g: number;
-  b: number;
-  [key: number]: number
-}
+import { IObservable } from "../interfaces/IObservable";
+import { IRGBValue } from "../interfaces/IRGBValue";
+import { IInitializable } from "../interfaces/IInitializable";
 
 export interface IStyleEditorValues {
   "Background": IRGBValue,
@@ -26,22 +22,44 @@ export interface IStyleEditorValues {
 const OK_TEXT = "✔";
 const CANCEL_TEXT = "✘";
 
-export class StyleEditor extends AbstractComponent implements IObserver {
+export class StyleEditor extends AbstractComponent implements IObserver, IObservable {
   private styleConfiguration: StyleConfiguration;
 
   private values: IStyleEditorValues;
+  private lastSelectedOption: string;
 
   private selector: HTMLSelectElement;
   private redSlider: RangeSlider;
   private greenSlider: RangeSlider;
   private blueSlider: RangeSlider;
 
+  private observers: IObserver[];
+
   constructor(rootID: string) {
     super(rootID);
     this.styleConfiguration = new StyleConfiguration(this);
+    this.observers = [];
   }
 
-  public init(colorValues: IStyleEditorValues): IRunnable {
+  public registerObserver(o: IObserver) {
+    this.observers.push(o);
+  }
+
+  public removeObserver(o: IObserver) {
+    for (let i = 0; i < this.observers.length; ++i) {
+      if (this.observers[i] === o) {
+        this.observers.splice(i, 1);
+      }
+    }
+  }
+
+  public notifyObservers() {
+    for (const o of this.observers) {
+      o.receiveNotification(this.values);
+    }
+  }
+
+  public init(colorValues: IStyleEditorValues): IInitializable {
     this.values = colorValues;
     return super.init();
   }
@@ -56,6 +74,10 @@ export class StyleEditor extends AbstractComponent implements IObserver {
 
   public getDefaultStylesheet(): object {
     return {
+      parentDiv: style({
+        position: "relative",
+        overflow: "auto"
+      }),
       appContainer: style({
         padding: em(0.2),
         display: "flex",
@@ -72,6 +94,7 @@ export class StyleEditor extends AbstractComponent implements IObserver {
         flexDirection: "column",
         fontSize: "9pt",
         fontFamily: StyleConfiguration.getFontFamily(),
+        width: percent(100),
         $nest: {
           "p": {
             margin: em(0.3)
@@ -123,13 +146,7 @@ export class StyleEditor extends AbstractComponent implements IObserver {
   }
 
   public onChangeCallback(e: Event, parent: StyleEditor) {
-    const newColor: IRGBValue = {
-      r: this.redSlider.getCurrentValue(),
-      g: this.greenSlider.getCurrentValue(),
-      b: this.blueSlider.getCurrentValue(),
-    };
-
-    parent.visualizeColor(newColor);
+    parent.visualizeColor(parent.getSliderValues());
   }
 
   public renderDOM(appRoot: HTMLElement) {
@@ -147,18 +164,32 @@ export class StyleEditor extends AbstractComponent implements IObserver {
       optionArray.push(optionElement);
     }
 
-    const selectFactory = ElementFactory.select();
+    let selectFactory = ElementFactory.select();
     optionArray.forEach(element => {
       selectFactory.withChildren(element);
     });
-    selectFactory.withEventListener("change", (e: Event) => {
-      const sel = e.target as HTMLSelectElement;
-      const col = this.values[sel.selectedOptions[0].value];
-      this.setSliderValues(col);
-      e.stopPropagation();
-    });
+
+    selectFactory.withEventListener("input", (() => {
+      const parentControl: StyleEditor = this;
+      return (e: Event) => {
+        console.log("Here I am.");
+        const sel = e.target as HTMLSelectElement;
+        const newSelectedOption = sel.selectedOptions[0].value;
+        if (newSelectedOption !== parentControl.lastSelectedOption) {
+          const colorSet = parentControl.getSliderValues();
+          parentControl.values[parentControl.lastSelectedOption] = colorSet;
+          parentControl.lastSelectedOption = newSelectedOption;
+          const col = parentControl.values[newSelectedOption];
+          parentControl.setSliderValues(col);
+        }
+        e.stopPropagation();
+      }
+    })()  
+  );
+
     this.selector = selectFactory.create() as HTMLSelectElement;
 
+    this.styleConfiguration.addStyles(appRoot.parentElement, "parentDiv");
     appRoot.appendChild(
       ElementFactory.form()
         .usingStyleConfig(this.styleConfiguration)
@@ -221,10 +252,25 @@ export class StyleEditor extends AbstractComponent implements IObserver {
                   ElementFactory.button()
                     .withText(OK_TEXT)
                     .withName("ok")
-                    .create(),
+                    .withEventListener("click", (() => {
+                      const parentControl: StyleEditor = this;
+                      return (e: Event) => {
+                        parentControl.setSelectedOptionsColorFromSliders();
+                        parentControl.notifyOk(parentControl.values);
+                        e.stopPropagation();
+                      }
+                    })()
+                  ).create(),
                   ElementFactory.button()
                     .withText(CANCEL_TEXT)
                     .withName("cancel")
+                    .withEventListener("click", (() => {
+                      const parentControl: StyleEditor = this;
+                      return (e: Event) => {
+                        parentControl.notifyCancel();
+                        e.stopPropagation();
+                      }
+                    })())
                     .create()
                 )
                 .create()
@@ -238,7 +284,8 @@ export class StyleEditor extends AbstractComponent implements IObserver {
     this.greenSlider = new RangeSlider("g-slider");
     this.blueSlider = new RangeSlider("b-slider");
 
-    const initColor = this.values.Background;
+    this.lastSelectedOption = Object.keys(this.values)[0];
+    const initColor = this.values[this.lastSelectedOption];
     this.initializeSliders(initColor);
 
     this.redSlider.registerObserver(this);
@@ -249,24 +296,28 @@ export class StyleEditor extends AbstractComponent implements IObserver {
   }
 
   public receiveNotification<T>(message: T) {
-    const newColor = {
-        r: this.redSlider.getCurrentValue(),
-        g: this.greenSlider.getCurrentValue(),
-        b: this.blueSlider.getCurrentValue()
-    };
-    this.visualizeColor(newColor);
+    this.visualizeColor(this.getSliderValues());
   }
 
   private getSelectedOptionsColor(): IRGBValue {
     const key = this.selector.selectedOptions[0].value;
     const selectedColor = this.values[key];
+    return selectedColor;
+  }
+
+  public setSelectedOptionsColorFromSliders() {
+    const colorSet: IRGBValue = this.getSliderValues();
+    this.values[this.lastSelectedOption] = colorSet;
+}
+
+  private getSliderValues(): IRGBValue {
     return {
       r: this.redSlider.getCurrentValue(),
       g: this.greenSlider.getCurrentValue(),
       b: this.blueSlider.getCurrentValue()
     }
   }
-
+  
   private setSliderValues(color: IRGBValue) {
     this.redSlider.setValue(color.r);
     this.greenSlider.setValue(color.g);

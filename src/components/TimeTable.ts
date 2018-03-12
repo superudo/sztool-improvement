@@ -1,31 +1,49 @@
 import * as csstips from "csstips";
 import * as csx from "csx";
-import { important } from "csx";
+import { important, rgb, ColorHelper, background } from "csx";
 import { percent } from "csx/lib";
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeSelector } from "./TimeSelector";
+import { IStyleEditorValues } from "./StyleEditor";
+import * as LocalStorageService from "../environment/LocalStorageService";
 
 const START_HOUR: number = 7;
 const TIME_ROWS: number = 4;
 const HOUR_COLUMNS: number = 4;
 
-const BUTTON_BACKGROUND_HRS = csx.color("#4caf50");
-const BUTTON_BACKGROUND_MIN = BUTTON_BACKGROUND_HRS.darken(percent(5));
+const DARKEN_BY_PERCENT = 5;
+const DESATURATE_BY_PERCENT = 70;
+
+const COLOR_CONFIG_STORE = "time-table-color-config";
 
 export class TimeTable implements IStylesheetProvider {
     private target: TimeControlWrapper;
     private styleConfiguration: StyleConfiguration;
+    private colorValues: IStyleEditorValues;
 
     constructor(targetControl: TimeControlWrapper) {
         this.target = targetControl;
         this.styleConfiguration = new StyleConfiguration(this);
+        this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE) || 
+            {
+                "Background": {r: 222, g: 184, b: 35},
+                "Button BG": {r: 0, g: 128, b: 0},
+                "Button Text": {r: 255, g: 255, b: 255},
+                "Time bar": {r: 0, g: 100, b: 0},
+              };
     }
 
     public getProviderName() {
         return "timetable";
+    }
+
+    private getCssColorFor(element: "Background" | "Button BG" | "Button Text" | "Time bar"): ColorHelper {
+        return rgb(this.colorValues[element].r, 
+            this.colorValues[element].g, 
+            this.colorValues[element].b);
     }
 
     public getDefaultStylesheet() {
@@ -36,7 +54,7 @@ export class TimeTable implements IStylesheetProvider {
                 overflow: "auto",
                 $nest: {
                   "&>button": {
-                    border: "1px solid " + csx.green.toString(),
+                    border: "1px solid " + this.getCssColorFor("Time bar").toString(),
                     color: csx.white.toString(),
                     padding: "0.1em 0.7em",
                     cursor: "pointer",
@@ -51,25 +69,25 @@ export class TimeTable implements IStylesheetProvider {
                 }
               }),
               minuteButton: style({
-                backgroundColor: BUTTON_BACKGROUND_MIN.toString(),
+                backgroundColor: this.getCssColorFor("Button BG").darken(percent(DARKEN_BY_PERCENT)).toString(),
                 $nest: {
                     "&:hover": {
-                        backgroundColor: BUTTON_BACKGROUND_MIN
-                            .desaturate(percent(20)).toString(),
+                        backgroundColor: this.getCssColorFor("Button BG").darken(percent(DARKEN_BY_PERCENT))
+                            .desaturate(percent(DESATURATE_BY_PERCENT)).toString(),
                       }
                 }
               }),
               hourButton: style({
-                backgroundColor: BUTTON_BACKGROUND_HRS.toString(),
+                backgroundColor: this.getCssColorFor("Button BG").toString(),
                 $nest: {
                     "&:hover": {
-                        backgroundColor: BUTTON_BACKGROUND_HRS
+                        backgroundColor:  this.getCssColorFor("Button BG")
                             .desaturate(percent(20)).toString(),
                       }
                 }
               }),
               outer: style(csstips.inlineBlock, {
-                backgroundColor: csx.burlywood.toString(),
+                backgroundColor: this.getCssColorFor("Background").toString(),
                 padding: csx.em(0.3),
                 fontFamily: StyleConfiguration.getFontFamily(),
                 fontSize: "10pt",
@@ -133,6 +151,17 @@ export class TimeTable implements IStylesheetProvider {
         outerDiv.appendChild(minutesContainer);
 
         return outerDiv;
+    }
+
+    public getColorValues(): IStyleEditorValues {
+        return this.colorValues;
+    }
+
+    public setColorValues(values?: IStyleEditorValues) {
+        if (values) {
+            this.colorValues = values;
+            LocalStorageService.setObject(COLOR_CONFIG_STORE, this.colorValues);
+        }
     }
 
     private getMinuteLine(index: number): HTMLElement {

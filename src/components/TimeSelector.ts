@@ -2,9 +2,13 @@ import * as csstips from "csstips";
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
-import { ControlSwitcher } from "./ControlSwitcher";
+import { ControlSwitcher, CONTROL_ITEM_CONFIG, USE_CONTROL_ITEM, CONTROL_ITEM_NEW } from "./ControlSwitcher";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
+import { ElementFactory } from "./ElementFactory";
+import { StyleEditor, IStyleEditorValues } from "./StyleEditor";
+import { percent } from "csx/lib";
+import { OverlayControl } from "./OverlayControl";
 
 const INPUT_BUTTON_SIGN: string = "➽";
 const CANCEL_BUTTON_SIGN: string = "⛔";
@@ -37,6 +41,15 @@ export class TimeSelector implements IStylesheetProvider {
 
   public getDefaultStylesheet() {
     return {
+      timeControlOverlay: style({
+        position: "absolute",
+        width: percent(100),
+        height: percent(100),
+        top: 0,
+        left: 0,
+        zIndex: 100,
+        opacity: 0
+      }),
       controlArea: style(csstips.content, {
         fontFamily: StyleConfiguration.getFontFamily(),
         fontSize: "11pt",
@@ -55,14 +68,14 @@ export class TimeSelector implements IStylesheetProvider {
   }
 
   public initApp(appRootId: string): void {
-    const fromControl = new TimeTable(this.fromTime);
-    const toControl = new TimeTable(this.toTime);
+    this.fromTable = new TimeTable(this.fromTime);
+    this.toTable = new TimeTable(this.toTime);
 
-    const fromView = fromControl.createDom(
+    const fromView = this.fromTable.createDom(
       this.cancelButton,
       CANCEL_BUTTON_SIGN
     );
-    const toView = toControl.createDom(this.inputButton, INPUT_BUTTON_SIGN);
+    const toView = this.toTable.createDom(this.inputButton, INPUT_BUTTON_SIGN);
 
     const controlDiv = document.getElementById(appRootId);
     if (controlDiv === null) {
@@ -76,6 +89,36 @@ export class TimeSelector implements IStylesheetProvider {
 
     this.fromTime.setTimeCheckCallback(this.checkTimes, this);
     this.toTime.setTimeCheckCallback(this.checkTimes, this);
+
+    if (localStorage.getItem(USE_CONTROL_ITEM) === CONTROL_ITEM_CONFIG) {
+      this.injectConfigControl(fromView, toView);
+    }
+  }
+
+  private injectConfigControl(viewLeft: HTMLElement, viewRight: HTMLElement) {
+    const overlayID = "time-control-overlay";
+    const targetDivOv = ElementFactory.div().withID(overlayID).create();
+    viewLeft.insertBefore(targetDivOv, viewLeft.firstChild);
+    new OverlayControl(overlayID).init().run();
+
+    const rootID = "time-control-config";
+    const targetDiv = ElementFactory.div().withID(rootID).create();
+    viewRight.insertBefore(targetDiv, viewRight.firstChild);
+    
+    const myValues = this.fromTable.getColorValues();
+    new StyleEditor(rootID)
+      .init(myValues)
+      .whenCancel(() => {
+        targetDivOv.remove();
+        localStorage.setItem(USE_CONTROL_ITEM, CONTROL_ITEM_NEW);
+      })
+      .whenOk((values?: IStyleEditorValues) => {
+        this.fromTable.setColorValues(values);
+        targetDivOv.remove();
+        localStorage.setItem(USE_CONTROL_ITEM, CONTROL_ITEM_NEW);
+        window.location.replace(window.location.pathname);
+      })
+      .run();
   }
 
   private checkTimes(s: TimeSelector) {

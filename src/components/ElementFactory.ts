@@ -132,6 +132,7 @@ export class ElementFactory
       factory.tagName = tagName;
     }
     factory.children = [];
+    factory.events = [];
     return factory;
   }
 
@@ -214,9 +215,6 @@ export class ElementFactory
     eventHandler: EventListenerOrEventListenerObject,
     eventOptions?: boolean | AddEventListenerOptions
   ): ElementFactory {
-    if (this.events === undefined) {
-      this.events = [];
-    }
     this.events.push({
       name: eventName,
       handler: eventHandler,

@@ -4,6 +4,9 @@ import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { ElementFactory } from "./ElementFactory";
 
 export const USE_CONTROL_ITEM = "useNewControl";
+export const CONTROL_ITEM_ORIGINAL = "original";
+export const CONTROL_ITEM_NEW = "new";
+export const CONTROL_ITEM_CONFIG = "config";
 
 const ON_SYMBOL = "◉";
 const OFF_SYMBOL = "◎";
@@ -33,9 +36,9 @@ export class ControlSwitcher {
         .withHref("#")
         .usingStyleConfig(this.styleConfiguration)
         .withStyles("switchLink")
-        .withChildren(ElementFactory.text("☑").create())
+        .withChildren(ElementFactory.text(OFF_SYMBOL).create())
         .withEventListener("click", (e: Event) => {
-          localStorage.setItem(USE_CONTROL_ITEM, "true");
+          localStorage.setItem(USE_CONTROL_ITEM, CONTROL_ITEM_NEW);
           window.location.replace(window.location.pathname);
           e.stopPropagation();
         })
@@ -55,7 +58,7 @@ export class ControlSwitcher {
             .withStyles("switchLink")
             .withChildren(ElementFactory.text("🔧").create())
             .withEventListener("click", (e: Event) => {
-              localStorage.removeItem(USE_CONTROL_ITEM);
+              localStorage.setItem(USE_CONTROL_ITEM, CONTROL_ITEM_CONFIG);
               window.location.replace(window.location.pathname);
               e.stopPropagation();
             })
@@ -66,9 +69,9 @@ export class ControlSwitcher {
             .withHref("#")
             .usingStyleConfig(this.styleConfiguration)
             .withStyles("switchLink")
-            .withChildren(ElementFactory.text("☒").create())
+            .withChildren(ElementFactory.text(ON_SYMBOL).create())
             .withEventListener("click", (e: Event) => {
-              localStorage.removeItem(USE_CONTROL_ITEM);
+              localStorage.setItem(USE_CONTROL_ITEM, CONTROL_ITEM_ORIGINAL);
               window.location.replace(window.location.pathname);
               e.stopPropagation();
             })

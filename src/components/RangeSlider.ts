@@ -6,6 +6,7 @@ import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
 import { IObserver } from "../interfaces/IObserver";
 import { IObservable } from "../interfaces/IObservable";
+import { IInitializable } from "../interfaces/IInitializable";
 
 export interface IRangeSliderConfig {
   value: number;
@@ -41,7 +42,7 @@ export class RangeSlider extends AbstractComponent implements IObservable {
 
   public notifyObservers() {
       for (const o of this.observers) {
-          o.receiveNotification("value changed");
+          o.receiveNotification(this);
       }
   }
 
@@ -83,7 +84,7 @@ export class RangeSlider extends AbstractComponent implements IObservable {
     );
   }
 
-  public init(cfg: IRangeSliderConfig): IRunnable {
+  public init(cfg: IRangeSliderConfig): IInitializable {
     this.styleConfig = new StyleConfiguration(this);
     this.min = cfg.min;
     this.max = cfg.max;
@@ -100,6 +101,10 @@ export class RangeSlider extends AbstractComponent implements IObservable {
 
   public getCurrentValue(): number {
     return this.range.valueAsNumber;
+  }
+
+  public getNumber(): number {
+    return this.getCurrentValue();
   }
 
   public getDefaultStylesheet(): any {
