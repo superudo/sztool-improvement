@@ -1,8 +1,6 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const VersionFile = require('webpack-version-file');
-const WebpackShellPlugin = require('webpack-shell-plugin');
 
 module.exports = {
   entry: {
@@ -18,14 +16,6 @@ module.exports = {
       title: 'Production',
       template: './src/index.html'
     }),
-    new VersionFile({
-      output: "./dist/version.txt",
-      package: "./package.json",
-      template: "./resources/version-template.ejs"
-    }),
-    new WebpackShellPlugin({
-      onBuildEnd: [ 'type dist\\version.txt dist\\app.bundle.js > dist\\sztool-update.user.js']
-    })
   ],
   module: {
     rules: [
