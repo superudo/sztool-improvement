@@ -1,6 +1,7 @@
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const VersionFile = require('webpack-version-file');
 
 module.exports = {
   entry: {
@@ -15,6 +16,11 @@ module.exports = {
     new HtmlWebpackPlugin({
       title: 'Production',
       template: './src/index.html'
+    }),
+    new VersionFile({
+      output: "./dist/version.txt",
+      package: "./package.json",
+      template: "./resources/version-template.ejs"
     })
   ],
   module: {
