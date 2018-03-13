@@ -111,7 +111,7 @@ export class StyleEditor
             alignItems: "center",
           },
           "button": {
-            height: em(1.4)
+            height: em(1.7)
           },
         }
       }),

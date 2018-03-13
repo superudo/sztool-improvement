@@ -1,11 +1,12 @@
 import * as csstips from "csstips";
-import { background, ColorHelper, important, rgb } from "csx";
-import * as csx from "csx";
+import { center } from "csstips";
+import { background, ColorHelper, em, green, important, rgb, white } from "csx";
 import { percent } from "csx/lib";
-import { style } from "typestyle";
+import { cssRaw, style } from "typestyle";
 import * as LocalStorageService from "../environment/LocalStorageService";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { ElementFactory } from "./ElementFactory";
 import { IStyleEditorValues } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeSelector } from "./TimeSelector";
@@ -19,210 +20,259 @@ const DESATURATE_BY_PERCENT = 70;
 
 const COLOR_CONFIG_STORE = "time-table-color-config";
 const DEFAULT_COLORS = {
-    "Background": {r: 222, g: 184, b: 35},
-    "Button BG": {r: 0, g: 128, b: 0},
-    "Button Text": {r: 255, g: 255, b: 255},
-    "Time bar": {r: 0, g: 100, b: 0},
-  };
+  Background: { r: 222, g: 184, b: 35 },
+  "Button BG": { r: 0, g: 128, b: 0 },
+  "Button Text": { r: 255, g: 255, b: 255 },
+  "Time bar": { r: 0, g: 100, b: 0 }
+};
 
 export class TimeTable implements IStylesheetProvider {
-    private target: TimeControlWrapper;
-    private styleConfiguration: StyleConfiguration;
-    private colorValues: IStyleEditorValues;
+  private target: TimeControlWrapper;
+  private styleConfiguration: StyleConfiguration;
+  private colorValues: IStyleEditorValues;
 
-    constructor(targetControl: TimeControlWrapper) {
-        this.target = targetControl;
-        this.styleConfiguration = new StyleConfiguration(this);
-        this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE)
-            || DEFAULT_COLORS;
-    }
+  constructor(targetControl: TimeControlWrapper) {
+    this.target = targetControl;
+    this.styleConfiguration = new StyleConfiguration(this);
+    this.colorValues =
+      LocalStorageService.getObject(COLOR_CONFIG_STORE) || DEFAULT_COLORS;
+  }
 
-    public getProviderName() {
-        return "timetable";
-    }
+  public getProviderName() {
+    return "timetable";
+  }
 
-    public getDefaultStylesheet() {
-        return {
-            clockline: style({
-                backgroundColor: csx.green.toString(),
-                padding: 0,
-                overflow: "auto",
-                $nest: {
-                  "&>button": {
-                    border: "1px solid "
-                        + this.getCssColorFor("Time bar").toString(),
-                    color: csx.white.toString(),
-                    padding: "0.1em 0.7em",
-                    cursor: "pointer",
-                    float: "left"
-                  },
-                  "&+button": {
-                    clear: "left"
-                  },
-                  "&>select": {
-                    margin: "0.25em auto"
-                  }
-                }
-              }),
-              minuteButton: style({
+  public getDefaultStylesheet() {
+    return {
+      outer: style(csstips.inlineBlock, {
+        backgroundColor: this.getCssColorFor("Background").toString(),
+        padding: em(0.3),
+        fontFamily: StyleConfiguration.getFontFamily(),
+        fontSize: "12pt",
+        position: "relative",
+        overflowY: "auto"
+      }),
+      container: style({
+        fontSize: "9pt",
+        fontFamily: StyleConfiguration.getFontFamily(),
+        overflow: "hidden",
+        display: "inline-block",
+        $nest: {
+          "& select": {
+            fontFamily: StyleConfiguration.getFontFamily(),
+          },
+          "& table": {
+            borderCollapse: "collapse",
+            fontFamily: StyleConfiguration.getFontFamily(),
+            fontSize: percent(100),
+            color: white.toString()
+          },
+          "& td": {
+            verticalAlign: "middle",
+            textAlign: "center",
+            padding: em(0.4) + " " + em(0.8)
+          },
+          "& table tr:first-child": {
+            backgroundColor: this.getCssColorFor("Time bar").toString(),
+            borderTop: "1px solid " + white.toString()
+          },
+          "& table th:first-child": {
+            borderLeft: "1px solid " + white.toString(),
+            textAlign: "left",
+            padding: em(0.2) + " " + em(0.4)
+          },
+          "& table th:last-child": {
+            borderRight: "1px solid " + white.toString(),
+            padding: em(0.2) + " " + em(0.4)
+          },
+          "& table tr td": {
+            transition: "background-color .2s",
+            backgroundColor: this.getCssColorFor("Button BG").toString(),
+            border: "1px solid " + white.toString(),
+            $nest: {
+              "&:hover": {
                 backgroundColor: this.getCssColorFor("Button BG")
-                    .darken(percent(DARKEN_BY_PERCENT)).toString(),
-                $nest: {
-                    "&:hover": {
-                        backgroundColor: this.getCssColorFor("Button BG")
-                            .darken(percent(DARKEN_BY_PERCENT))
-                            .desaturate(percent(DESATURATE_BY_PERCENT))
-                            .toString(),
-                      }
-                }
-              }),
-              hourButton: style({
-                backgroundColor: this.getCssColorFor("Button BG").toString(),
-                $nest: {
-                    "&:hover": {
-                        backgroundColor:  this.getCssColorFor("Button BG")
-                            .desaturate(percent(20)).toString(),
-                      }
-                }
-              }),
-              outer: style(csstips.inlineBlock, {
+                  .lighten(percent(DARKEN_BY_PERCENT))
+                  .toString(),
+                fontSize: percent(90),
+                cursor: "pointer"
+              }
+            }
+          },
+          "& table tr td:nth-child(5)": {
+            fontSize: percent(30),
+            backgroundColor: this.getCssColorFor("Background").toString(),
+            border: 0,
+            cursor: "default",
+            $nest: {
+              "&:hover": {
+                fontSize: percent(30),
                 backgroundColor: this.getCssColorFor("Background").toString(),
-                padding: csx.em(0.3),
-                fontFamily: StyleConfiguration.getFontFamily(),
-                fontSize: "10pt",
-                position: "relative",
-                overflowY: "auto"
-              }),
-            clockTitle: style({
-                color: csx.white.toString(),
-                backgroundColor: this.getCssColorFor("Time bar").toString(),
-                border: "1px solid " + this.getCssColorFor("Time bar")
-                    .darken(percent(10)).toString(),
-                fontWeight: "bold",
-                padding: "0.1em 0.2em",
-                marginBottom: "0.3em"
-              }),
-             hours: style({
-                float: "left"
-              }),
-              minutes: style({
-                float: "left",
-                marginLeft: "0.5em"
-              }),
-              inputButton: style({
-                float: "right",
-                margin: "0.2em auto"
-              })
-          };
-    }
-
-    public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
-        const outerDiv = document.createElement("div");
-        this.styleConfiguration.addStyles(outerDiv, "outer");
-
-        const titleLine = document.createElement("div");
-        this.styleConfiguration.addStyles(titleLine, "clockline", "clockTitle");
-
-        titleLine.appendChild(this.target.hourControl);
-        titleLine.appendChild(new Text(":"));
-        titleLine.appendChild(this.target.minuteControl);
-
-        if (btn && btn != null) {
-            btn.value = (btnValue) ? btnValue : "???";
-            titleLine.appendChild(btn);
-            this.styleConfiguration.addStyles(btn, "inputButton");
+                border: 0,
+                cursor: "default"
+              }
+            }
+          },
+          "& table tr td:last-child": {
+            backgroundColor: this.getCssColorFor("Button BG")
+              .darken(percent(DARKEN_BY_PERCENT))
+              .toString(),
+            $nest: {
+              "&:hover": {
+                backgroundColor: this.getCssColorFor("Button BG")
+                  .darken(percent(DARKEN_BY_PERCENT))
+                  .desaturate(percent(DESATURATE_BY_PERCENT))
+                  .toString()
+              }
+            }
+          }
         }
+      }),
+      inputButton: style({
+        fontSize: percent(60),
+        float: "right",
+        margin: "0.2em 0.1em 0.2em"
+      })
+    };
+  }
 
-        outerDiv.appendChild(titleLine);
-
-        const hoursContainer = document.createElement("div");
-        for (let i = 0; i < TIME_ROWS; ++i) {
-            const hourLine = this.getHourLine(i);
-            hoursContainer.appendChild(hourLine);
-        }
-        this.styleConfiguration.addStyles(hoursContainer, "hours");
-        outerDiv.appendChild(hoursContainer);
-
-        const minutesContainer = document.createElement("div");
-        for (let i = 0; i < TIME_ROWS; ++i) {
-            const minuteLine = this.getMinuteLine(i);
-            minutesContainer.appendChild(minuteLine);
-        }
-        this.styleConfiguration.addStyles(minutesContainer, "minutes");
-        outerDiv.appendChild(minutesContainer);
-
-        return outerDiv;
+  public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
+    if (btn !== null) {
+      btn.value = btnValue || "?";
     }
 
-    public getColorValues(): IStyleEditorValues {
-        return this.colorValues;
-    }
+    const m = this.changeMinutes;
+    const h = this.changeHours;
 
-    public setColorValues(values?: IStyleEditorValues) {
-        if (values) {
-            this.colorValues = values;
-            LocalStorageService.setObject(COLOR_CONFIG_STORE, this.colorValues);
-        }
-    }
+    return ElementFactory.div()
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("outer")
+      .withChildren(
+        ElementFactory.div()
+          .usingStyleConfig(this.styleConfiguration)
+          .withStyles("container")
+          .withChildren(
+            ElementFactory.table()
+              .withChildren(
+                ElementFactory.tr()
+                  .withChildren(
+                    ElementFactory.th()
+                      .withAttribute("colspan", "6")
+                      .withChildren(
+                        this.target.hourControl,
+                        ElementFactory.text(":").create(),
+                        this.target.minuteControl,
+                        ElementFactory.fromElement(btn)
+                          .usingStyleConfig(this.styleConfiguration)
+                          .withStyles("inputButton")
+                          .create()
+                      )
+                      .create()
+                  )
+                  .create(),
+                ElementFactory.tr()
+                  .withChildren(
+                    this.createTD(7, h),
+                    this.createTD(8, h),
+                    this.createTD(9, h),
+                    this.createTD(10, h),
+                    this.createSpaceTD(),
+                    this.createTD(0, m),
+                  )
+                  .create(),
+                ElementFactory.tr()
+                  .withChildren(
+                    this.createTD(11, h),
+                    this.createTD(12, h),
+                    this.createTD(13, h),
+                    this.createTD(14, h),
+                    this.createSpaceTD(),
+                    this.createTD(15, m)
+                  )
+                  .create(),
+                ElementFactory.tr()
+                  .withChildren(
+                    this.createTD(15, h),
+                    this.createTD(16, h),
+                    this.createTD(17, h),
+                    this.createTD(18, h),
+                    this.createSpaceTD(),
+                    this.createTD(30, m)
+                  )
+                  .create(),
+                ElementFactory.tr()
+                  .withChildren(
+                    this.createTD(19, h),
+                    this.createTD(20, h),
+                    this.createTD(21, h),
+                    this.createTD(22, h),
+                    this.createSpaceTD(),
+                    this.createTD(45, m)
+                  )
+                  .create()
+              )
+              .create()
+          )
+          .create()
+      )
+      .create() as HTMLElement;
+  }
 
-    private getCssColorFor(element:
-        "Background" | "Button BG" | "Button Text" | "Time bar"): ColorHelper {
-        return rgb(this.colorValues[element].r,
-            this.colorValues[element].g,
-            this.colorValues[element].b);
-    }
+  public getColorValues(): IStyleEditorValues {
+    return this.colorValues;
+  }
 
-    private getMinuteLine(index: number): HTMLElement {
-        const minuteLine = document.createElement("div");
-        this.styleConfiguration.addStyles(minuteLine, "clockline");
-        const minuteButton = document.createElement("button");
-        const btnValue = this.formatNumber(index * 15);
-        minuteButton.innerText = btnValue;
-        minuteButton.value = btnValue;
-        minuteButton.type = "button";
-        this.styleConfiguration.addStyles(minuteButton, "minuteButton");
-        minuteButton.addEventListener("click", (e: Event) => {
-            this.changeMinutes(e);
+  public setColorValues(values?: IStyleEditorValues) {
+    if (values) {
+      this.colorValues = values;
+      LocalStorageService.setObject(COLOR_CONFIG_STORE, this.colorValues);
+    }
+  }
+
+  private createSpaceTD(): HTMLElement {
+    return ElementFactory.td()
+      .withChildren(ElementFactory.text(String.fromCharCode(160)).create())
+      .create() as HTMLElement;
+  }
+
+  private createTD(value: number,
+                   change: (p: TimeTable, v: string) => void): HTMLElement {
+    const vText = (value < 10 ? "0" : "") + value;
+    return ElementFactory.td()
+      .withChildren(ElementFactory.text(vText).create())
+      .withEventListener("click", (() => {
+        const parent = this;
+        const val = vText;
+        return (e: Event) => {
+            change(parent, val);
             e.stopPropagation();
-        });
-        minuteLine.appendChild(minuteButton);
-        return minuteLine;
-    }
+        };
+    })())
+    .create() as HTMLElement;
+  }
 
-    private getHourLine(timeRow: number): HTMLElement {
-        const hourLine = document.createElement("div");
-        this.styleConfiguration.addStyles(hourLine, "clockline");
-        for (let i = 0; i < HOUR_COLUMNS; ++i) {
-            const hourButton = document.createElement("button");
-            const btnValue = this.formatNumber(
-                START_HOUR + TIME_ROWS * timeRow + i);
-            hourButton.innerText = btnValue;
-            hourButton.value = btnValue;
-            hourButton.type = "button";
-            this.styleConfiguration.addStyles(hourButton, "hourButton");
-            hourButton.addEventListener("click", (e: Event) => {
-                this.changeHours(e);
-                e.stopPropagation();
-            });
-            hourLine.appendChild(hourButton);
-        }
-        return hourLine;
-    }
+  private getCssColorFor(
+    element: "Background" | "Button BG" | "Button Text" | "Time bar"
+  ): ColorHelper {
+    return rgb(
+      this.colorValues[element].r,
+      this.colorValues[element].g,
+      this.colorValues[element].b
+    );
+  }
 
-    private changeHours(e: Event) {
-        const newHourText = (e.target as HTMLButtonElement).value;
-        this.target.setHours(newHourText);
-    }
+  private changeHours(parent: TimeTable, v: string) {
+    parent.target.setHours(v);
+  }
 
-    private changeMinutes(e: Event) {
-        const newMinuteText = (e.target as HTMLButtonElement).value;
-        this.target.setMinutes(newMinuteText);
-    }
+  private changeMinutes(parent: TimeTable, v: string) {
+    parent.target.setMinutes(v);
+  }
 
-    private formatNumber(value: number): string {
-        if (value < 0 || value > 99) {
-            return "" + value;
-        }
-        return ((value < 10) ? "0" : "") + value;
+  private formatNumber(value: number): string {
+    if (value < 0 || value > 99) {
+      return "" + value;
     }
+    return (value < 10 ? "0" : "") + value;
+  }
 }

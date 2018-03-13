@@ -11,7 +11,11 @@ const TAGS = {
   DIV: "div",
   SPAN: "span",
   BR: "br",
-  LINK: "a"
+  LINK: "a",
+  TABLE: "table",
+  TR: "tr",
+  TH: "th",
+  TD: "td"
 };
 
 const INPUT_TAGS = [TAGS.INPUT, TAGS.BUTTON, TAGS.SELECT];
@@ -23,6 +27,7 @@ interface IElementFactory {
     h: EventListenerOrEventListenerObject,
     o?: boolean | AddEventListenerOptions
   ) => IElementFactory;
+  withAttribute: (k: string, v: string) => ElementFactory;
   create: () => HTMLElement | Text;
 }
 
@@ -76,6 +81,7 @@ export class ElementFactory
     IStyledParentFactory,
     IOptionFactory,
     ILinkFactory {
+
   public static form(): IStyledParentFactory {
     return this.buildFactory(TAGS.FORM);
   }
@@ -126,6 +132,31 @@ export class ElementFactory
       return this.buildFactory(TAGS.BR);
   }
 
+  public static table(): IStyledParentFactory {
+    return this.buildFactory(TAGS.TABLE);
+  }
+
+  public static tr(): IStyledParentFactory {
+    return this.buildFactory(TAGS.TR);
+  }
+
+  public static th(): IStyledParentFactory {
+    return this.buildFactory(TAGS.TH);
+  }
+
+  public static td(): IStyledParentFactory {
+    return this.buildFactory(TAGS.TD);
+  }
+
+  public static fromElement(el: HTMLElement): IStyledParentFactory {
+    const factory = new ElementFactory();
+    factory.sourceElement = el;
+    factory.children = [];
+    factory.events = [];
+    factory.attributes = {};
+    return factory;
+  }
+
   private static buildFactory(tagName?: string): ElementFactory {
     const factory = new ElementFactory();
     if (tagName) {
@@ -133,6 +164,8 @@ export class ElementFactory
     }
     factory.children = [];
     factory.events = [];
+    factory.attributes = {};
+
     return factory;
   }
 
@@ -150,6 +183,8 @@ export class ElementFactory
   private that: ElementFactory;
   private optionSelected: boolean;
   private minmax: any;
+  private attributes: any;
+  private sourceElement: HTMLElement;
 
   public usingStyleConfig(
     styleConfiguration: StyleConfiguration
@@ -195,7 +230,9 @@ export class ElementFactory
 
   public withChildren(...children: any[]) {
     for (const child of children) {
-      this.children.push(child);
+      if (child !== null) {
+        this.children.push(child);
+      }
     }
     return this;
   }
@@ -223,26 +260,29 @@ export class ElementFactory
     return this;
   }
 
+  public withAttribute(key: string, value: string): ElementFactory {
+    this.attributes[key] = value;
+    return this;
+  }
+
   public isSelected(selected: boolean): IOptionFactory {
     this.optionSelected = selected;
     return this;
   }
 
   public create(): HTMLElement | Text {
-    if (!this.tagName) {
-      if (this.text) {
+      if (this.text && !this.tagName) {
         return document.createTextNode(this.text);
-      } else {
-        throw new Error("Bad initialization: " + this);
       }
-    }
 
-    const element = document.createElement(this.tagName);
-    if (this.id) {
+      const element = this.sourceElement
+        || document.createElement(this.tagName);
+
+      if (this.id) {
       element.id = this.id;
     }
 
-    if (this.isInputElement(element)) {
+      if (this.isInputElement(element)) {
       const inputElement = element as HTMLInputElement;
       if (this.name) {
         inputElement.name = this.name;
@@ -262,7 +302,7 @@ export class ElementFactory
       }
     }
 
-    if (this.tagName === TAGS.OPTION) {
+      if (this.tagName === TAGS.OPTION) {
       const optionElement = element as HTMLOptionElement;
       if (this.value) {
         optionElement.value = this.value;
@@ -275,12 +315,12 @@ export class ElementFactory
       }
     }
 
-    if (this.tagName === TAGS.BUTTON) {
+      if (this.tagName === TAGS.BUTTON) {
       (element as HTMLButtonElement).type = "button";
       (element as HTMLButtonElement).innerText = this.text || "Button";
     }
 
-    if (this.styles) {
+      if (this.styles) {
       if (!this.styleConfiguration) {
         throw new Error("No style configuration given.");
       }
@@ -289,23 +329,27 @@ export class ElementFactory
       }
     }
 
-    if (this.children) {
+      if (this.children) {
       for (const child of this.children) {
         element.appendChild(child);
       }
     }
 
-    if (this.tagName === TAGS.LINK && this.url) {
+      if (this.tagName === TAGS.LINK && this.url) {
       (element as HTMLLinkElement).href = this.url;
     }
 
-    if (this.events) {
+      if (this.events) {
       for (const ev of this.events) {
         element.addEventListener(ev.name, ev.handler, ev.options);
       }
     }
 
-    return element;
+      Object.keys(this.attributes).forEach((value: string) => {
+      element.setAttribute(value, this.attributes[value]);
+    });
+
+      return element;
   }
 
   private isInputElement(element: HTMLElement): boolean {
