@@ -111,7 +111,7 @@ export class StyleEditor
             alignItems: "center",
           },
           "button": {
-            height: em(1.7)
+            height: em(1.5)
           },
         }
       }),
@@ -133,8 +133,9 @@ export class StyleEditor
         }
       }),
       buttoncontainer: style({
+        fontSize: percent(90),
         width: percent(100),
-        padding: "0 " + em(0.5),
+        padding: "0 " + em(0.3),
         textAlign: "right",
         $nest: {
           "&>button": {

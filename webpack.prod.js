@@ -9,7 +9,7 @@ module.exports = merge(common, {
     new ClosureCompilerPlugin({
       compiler: {
         language_in: 'ECMASCRIPT6',
-        language_out: 'ECMASCRIPT5',
+        language_out: 'ECMASCRIPT5_STRICT',
         compilation_level: 'SIMPLE'
       },
       concurrency: 3

@@ -53,19 +53,23 @@ export class TimeTable implements IStylesheetProvider {
         overflowY: "auto"
       }),
       container: style({
-        fontSize: "9pt",
+        fontSize: "10pt",
         fontFamily: StyleConfiguration.getFontFamily(),
         overflow: "hidden",
         display: "inline-block",
         $nest: {
           "& select": {
             fontFamily: StyleConfiguration.getFontFamily(),
+            marginTop: em(0.2),
           },
           "& table": {
             borderCollapse: "collapse",
             fontFamily: StyleConfiguration.getFontFamily(),
             fontSize: percent(100),
             color: white.toString()
+          },
+          "& table th": {
+            backgroundColor: important(this.getCssColorFor("Time bar").toString())
           },
           "& td": {
             verticalAlign: "middle",
@@ -129,17 +133,23 @@ export class TimeTable implements IStylesheetProvider {
         }
       }),
       inputButton: style({
-        fontSize: percent(60),
         float: "right",
-        margin: "0.2em 0.1em 0.2em"
+        margin: "0.2em 0.2em 0.2em"
+      }),
+      invisible: style({
+        visibility: "hidden",
       })
     };
   }
 
   public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
-    if (btn !== null) {
-      btn.value = btnValue || "?";
-    }
+    let inputButton: HTMLInputElement = btn || ElementFactory.input()
+          .withInputType("button")
+          .usingStyleConfig(this.styleConfiguration)
+          .withStyles("invisible")
+          .create() as HTMLInputElement;
+
+    inputButton.value = btnValue || "?";
 
     const m = this.changeMinutes;
     const h = this.changeHours;
@@ -162,7 +172,7 @@ export class TimeTable implements IStylesheetProvider {
                         this.target.hourControl,
                         ElementFactory.text(":").create(),
                         this.target.minuteControl,
-                        ElementFactory.fromElement(btn)
+                        ElementFactory.fromElement(inputButton)
                           .usingStyleConfig(this.styleConfiguration)
                           .withStyles("inputButton")
                           .create()

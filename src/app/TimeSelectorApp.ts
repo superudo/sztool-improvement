@@ -36,7 +36,7 @@ export class TimeSelectorApp {
 
   public run() {
     if (this.showTimeSelector()) {
-      normalize();
+//      normalize();
       setupPage(this.applicationID);
       this.prepareApplicationRoot(
         this.timesParagraphWrapper.getParagraphElement()
@@ -60,6 +60,9 @@ export class TimeSelectorApp {
   private prepareApplicationRoot(insertAfter: HTMLElement) {
     const appRoot = document.createElement("div");
     appRoot.id = "app-root";
+
+    (insertAfter.parentNode as HTMLElement).style.maxHeight = "none";
+    (insertAfter.parentNode as HTMLElement).style.overflow = "auto";
     insertAfter.parentNode.insertBefore(appRoot, insertAfter.nextSibling);
   }
 
