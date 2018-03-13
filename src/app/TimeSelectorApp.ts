@@ -37,7 +37,7 @@ export class TimeSelectorApp {
   public run() {
     if (this.showTimeSelector()) {
 //      normalize();
-      setupPage(this.applicationID);
+//      setupPage(this.applicationID);
       this.prepareApplicationRoot(
         this.timesParagraphWrapper.getParagraphElement()
       );
