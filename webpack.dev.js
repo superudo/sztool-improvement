@@ -6,5 +6,12 @@ module.exports = merge(common, {
     mode: 'development',
     devServer: {
         contentBase: './dist',
+        compress: true,
+        port: 9000,
+        overlay: {
+            warnings: false,
+            errors: true
+        },
+        useLocalIp: false
     }
 });
