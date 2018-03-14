@@ -83,10 +83,10 @@ export class StyleEditor
         backgroundColor: linen.toString(),
         margin: 0,
         position: "absolute",
-        width: percent(100),
-        height: percent(100),
         top: 0,
-        left: 0
+        left: 0,
+        bottom: 0,
+        right: 0
       }),
       form: style({
         display: "flex",
@@ -95,22 +95,22 @@ export class StyleEditor
         fontFamily: StyleConfiguration.getFontFamily(),
         width: percent(100),
         $nest: {
-          "p": {
-            margin: em(0.3)
+          "& p": {
+            margin: em(0.3),
           },
-          "input": {
+          "& input": {
             height: em(1.4)
           },
-          "select": {
+          "& select": {
             fontSize: percent(90),
             height: em(1.4),
           },
-          "label": {
+          "& label": {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
           },
-          "button": {
+          "& button": {
             height: em(1.5)
           },
         }
