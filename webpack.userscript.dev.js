@@ -9,10 +9,15 @@ module.exports = merge(common, {
         new VersionFile({
             output: "./dist/version.txt",
             package: "./package.json",
-            template: "./resources/version-template.ejs"
+            template: "./resources/version-template.ejs",
+            data: {
+                environment: "-dev"
+            }
         }),
         new WebpackShellPlugin({
-            onBuildEnd: [ 'type dist\\version.txt dist\\app.bundle.js > dist\\sztool-update.user.js']
+            onBuildEnd: [ 
+                'if not exist .\\userscript md userscript',
+                'type dist\\version.txt dist\\app.bundle.js > userscript\\sztool-update.user.js']
         })
     ]
 });

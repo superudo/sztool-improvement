@@ -7,10 +7,11 @@
     "start": "webpack-dev-server --open --color --config webpack.dev.js",
     "build": "webpack --config webpack.prod.js",
     "build-dev": "webpack --config webpack.dev.js",
-    "build-script": "webpack --config webpack.dev.js"    
+    "build-script-dev": "webpack --config webpack.userscript.dev.js",
+    "build-script-prod": "webpack --config webpack.userscript.prod.js"    
   },
   "keywords": [],
-  "author": "",
+  "author": "Udo Woitek <udo.woitek@raytion.com>",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^9.4.6",
