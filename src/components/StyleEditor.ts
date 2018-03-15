@@ -110,9 +110,6 @@ export class StyleEditor
             justifyContent: "space-between",
             alignItems: "center",
           },
-          "& button": {
-            height: em(1.5)
-          },
         }
       }),
       slidercontainer: style({
@@ -138,10 +135,12 @@ export class StyleEditor
         padding: "0 " + em(0.3),
         textAlign: "right",
         $nest: {
-          "&>button": {
+          "& input[type=button]": {
+            padding: "0 " + em(1),
+            height: em(1.5),
             marginRight: em(0.35)
           },
-          "&>button::last-child": {
+          "& input[type=button]::last-child": {
             marginRight: 0
           }
         }
@@ -252,9 +251,10 @@ export class StyleEditor
                 .withStyles("buttoncontainer")
                 .withChildren(
                   ElementFactory.text(String.fromCharCode(160)).create(),
-                  ElementFactory.button()
-                    .withText(OK_TEXT)
-                    .withName("ok")
+                  ElementFactory.input()
+                    .withInputType("button")
+                    .withValue(OK_TEXT)
+                    .withName(OK_TEXT)
                     .withEventListener("click", (() => {
                       const parentControl: StyleEditor = this;
                       return (e: Event) => {
@@ -264,9 +264,10 @@ export class StyleEditor
                       };
                     })()
                   ).create(),
-                  ElementFactory.button()
-                    .withText(CANCEL_TEXT)
-                    .withName("cancel")
+                  ElementFactory.input()
+                    .withInputType("button")
+                    .withValue(CANCEL_TEXT)
+                    .withName(CANCEL_TEXT)
                     .withEventListener("click", (() => {
                       const parentControl: StyleEditor = this;
                       return (e: Event) => {

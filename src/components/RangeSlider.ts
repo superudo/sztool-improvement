@@ -14,6 +14,8 @@ export interface IRangeSliderConfig {
   max: number;
 }
 
+const USE_SLIDER_STYLE: boolean = false;
+
 export class RangeSlider extends AbstractComponent implements IObservable {
   private styleConfig: StyleConfiguration;
   private range: HTMLInputElement;
@@ -65,13 +67,22 @@ export class RangeSlider extends AbstractComponent implements IObservable {
       e.stopPropagation();
     });
 
-    this.text.addEventListener("blur", (e: Event) => {
-      let currentValue = (e.target as HTMLInputElement).valueAsNumber;
-      currentValue = this.assertNumberInRange(currentValue);
-      this.range.value = currentValue.toString();
-      this.range.dispatchEvent(new Event("input"));
-      e.stopPropagation();
-    });
+    this.text.addEventListener("blur", (() => {
+      const parent: RangeSlider = this;
+      return (e: Event) => {
+        const src = e.target as HTMLInputElement;
+        let currentValue = Number(src.value);
+        if (!isNaN(currentValue)) {
+          currentValue = parent.assertNumberInRange(currentValue);
+          parent.range.value = currentValue.toString();
+          parent.range.dispatchEvent(new Event("input"));
+        }
+        else {
+          src.value = parent.range.value;
+        }
+        e.stopPropagation();
+      };
+    })());
 
     div.appendChild(
       ElementFactory.div()
@@ -121,14 +132,14 @@ export class RangeSlider extends AbstractComponent implements IObservable {
             height: em(1.4),
           },
           "&>input[type=text]": {
-            fontSize: percent(90),
+            fontSize: percent(95),
             width: em(2.25),
             marginRight: 0
           }
         }
       }),
-/*
-      slider: cssRaw(`
+      slider: (USE_SLIDER_STYLE) ? 
+      cssRaw(`
       input[type=range] {
         -webkit-appearance: none;
         width: 100%;
@@ -216,7 +227,7 @@ export class RangeSlider extends AbstractComponent implements IObservable {
         background: #00b300;
       }
       `)
-*/
+      : style({})
     };
   }
 
