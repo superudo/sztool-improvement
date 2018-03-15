@@ -14,24 +14,5 @@ import * as LocalStorageService from "./environment/LocalStorageService";
   new TimeSelectorApp("app-root")
     .init()
     .run();
-
-/*
-  new StyleEditor("test").init(
-    {
-      "Background": {r: 100, g: 200, b: 42},
-      "Button BG": {r: 100, g: 200, b: 50},
-      "Button Text": {r: 50, g: 100, b: 10},
-      "Time bar": {r: 2, g: 20, b: 200},
-    }
-  )
-  .whenOk((info?: IStyleEditorValues) => {
-    const v = (info as IStyleEditorValues);
-    console.log("OK called with values:", v);
-  })
-  .whenCancel(() => {
-    console.log("Cancel called.");
-  })
-  .run();
-*/  
 })();
 

@@ -10,14 +10,26 @@ import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
 import { RangeSlider } from "./RangeSlider";
+import { TIME_TABLE_DEFAULT_COLORS } from "./TimeTable";
 
 export interface IStyleEditorValues {
   "Background": IRGBValue;
   "Time bar": IRGBValue;
-  "Button BG": IRGBValue;
-  "Button Text": IRGBValue;
+  "Button BG(Hrs)": IRGBValue;
+  "Button Text(Hrs)": IRGBValue;
+  "Button BG(Min)": IRGBValue;
+  "Button Text(Min)": IRGBValue;
   [key: string]: IRGBValue;
 }
+
+const STYLE_EDITOR_VALUE_KEYS = [  
+  "Background", 
+  "Time bar", 
+  "Button BG(Hrs)", 
+  "Button Text", 
+  "Button BG(Min)", 
+  "Button Text(Min)" 
+];
 
 const OK_TEXT = "✔";
 const CANCEL_TEXT = "✘";
@@ -64,6 +76,11 @@ export class StyleEditor
 
   public init(colorValues: IStyleEditorValues): IInitializable {
     this.values = colorValues;
+    STYLE_EDITOR_VALUE_KEYS.forEach((key: string) => {
+      if (this.values[key] === undefined) {
+        this.values[key] = TIME_TABLE_DEFAULT_COLORS[key];
+      }
+    }); 
     return super.init();
   }
 
@@ -162,6 +179,7 @@ export class StyleEditor
     const optionArray: HTMLElement[] = [];
     Object.keys(this.values).forEach(
       (value: string, index: number, array: string[]) => {
+      console.log("Option", value);
       const optionElement = ElementFactory.option()
         .withName(value)
         .create();

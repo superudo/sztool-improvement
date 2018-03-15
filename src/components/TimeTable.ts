@@ -4,6 +4,7 @@ import { background, ColorHelper, em, green, important, rgb, white } from "csx";
 import { percent } from "csx/lib";
 import { cssRaw, style } from "typestyle";
 import * as LocalStorageService from "../environment/LocalStorageService";
+import { IRGBValue } from "../interfaces/IRGBValue";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { ElementFactory } from "./ElementFactory";
@@ -19,10 +20,12 @@ const DARKEN_BY_PERCENT = 5;
 const DESATURATE_BY_PERCENT = 70;
 
 const COLOR_CONFIG_STORE = "time-table-color-config";
-const DEFAULT_COLORS = {
-  Background: { r: 222, g: 184, b: 35 },
-  "Button BG": { r: 0, g: 128, b: 0 },
-  "Button Text": { r: 255, g: 255, b: 255 },
+export const TIME_TABLE_DEFAULT_COLORS: any = {
+  "Background": { r: 222, g: 184, b: 35 },
+  "Button BG(Hrs)": { r: 0, g: 128, b: 0 },
+  "Button Text(Hrs)": { r: 255, g: 255, b: 255 },
+  "Button BG(Min)": { r: 0, g: 100, b: 0 },
+  "Button Text(Min)": { r: 255, g: 255, b: 255 },
   "Time bar": { r: 0, g: 100, b: 0 }
 };
 
@@ -35,7 +38,7 @@ export class TimeTable implements IStylesheetProvider {
     this.target = targetControl;
     this.styleConfiguration = new StyleConfiguration(this);
     this.colorValues =
-      LocalStorageService.getObject(COLOR_CONFIG_STORE) || DEFAULT_COLORS;
+      LocalStorageService.getObject(COLOR_CONFIG_STORE) || TIME_TABLE_DEFAULT_COLORS;
   }
 
   public getProviderName() {
@@ -91,11 +94,12 @@ export class TimeTable implements IStylesheetProvider {
           },
           "& table tr td": {
             transition: "background-color .2s",
-            backgroundColor: this.getCssColorFor("Button BG").toString(),
+            backgroundColor: this.getCssColorFor("Button BG(Hrs)").toString(),
+            color: this.getCssColorFor("Button Text(Hrs)").toString(),
             border: "1px solid " + white.toString(),
             $nest: {
               "&:hover": {
-                backgroundColor: this.getCssColorFor("Button BG")
+                backgroundColor: this.getCssColorFor("Button BG(Hrs)")
                   .lighten(percent(DARKEN_BY_PERCENT))
                   .toString(),
                 fontSize: percent(90),
@@ -118,15 +122,12 @@ export class TimeTable implements IStylesheetProvider {
             }
           },
           "& table tr td:last-child": {
-            backgroundColor: this.getCssColorFor("Button BG")
-              .darken(percent(DARKEN_BY_PERCENT))
-              .toString(),
+            backgroundColor: this.getCssColorFor("Button BG(Min)").toString(),
+            color: this.getCssColorFor("Button Text(Min)").toString(),
             $nest: {
               "&:hover": {
-                backgroundColor: this.getCssColorFor("Button BG")
-                  .darken(percent(DARKEN_BY_PERCENT))
-                  .desaturate(percent(DESATURATE_BY_PERCENT))
-                  .toString()
+                backgroundColor: this.getCssColorFor("Button BG(Min)")
+                  .lighten(percent(DARKEN_BY_PERCENT)).toString()
               }
             }
           }
@@ -262,13 +263,10 @@ export class TimeTable implements IStylesheetProvider {
   }
 
   private getCssColorFor(
-    element: "Background" | "Button BG" | "Button Text" | "Time bar"
+    element: "Background" | "Button BG(Hrs)" | "Button Text(Hrs)" | "Time bar" | "Button BG(Min)" | "Button Text(Min)"
   ): ColorHelper {
-    return rgb(
-      this.colorValues[element].r,
-      this.colorValues[element].g,
-      this.colorValues[element].b
-    );
+    const cssColor = this.colorValues[element] || TIME_TABLE_DEFAULT_COLORS[element];
+    return rgb(cssColor.r, cssColor.g, cssColor.b);
   }
 
   private changeHours(parent: TimeTable, v: string) {
