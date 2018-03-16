@@ -119,8 +119,8 @@ export class StyleEditor
             height: em(1.4)
           },
           "& select": {
-            fontSize: percent(90),
-            height: em(1.4),
+            fontSize: "9pt",
+            height: em(1.5),
           },
           "& label": {
             display: "flex",
@@ -154,7 +154,7 @@ export class StyleEditor
         $nest: {
           "& input[type=button]": {
             padding: "0 " + em(1),
-            height: em(1.5),
+            height: em(1.7),
             marginRight: em(0.35)
           },
           "& input[type=button]::last-child": {
