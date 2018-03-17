@@ -1,106 +1,121 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-    <title><%= htmlWebpackPlugin.options.title %></title>
+
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <title>
+        <%= htmlWebpackPlugin.options.title %>
+    </title>
     <script>
 
-    function settime() {
-        console.log("settime called");
-    }
-    
-    </script>
-  </head>
-  <body>
-        <P class=times>
-                <SELECT NAME=from_hh SIZE=1 onchange="settime()">
-                    <OPTION SELECTED>00</OPTION>
-                    <OPTION>01</OPTION>
-                    <OPTION>02</OPTION>
-                    <OPTION>03</OPTION>
-                    <OPTION>04</OPTION>
-                    <OPTION>05</OPTION>
-                    <OPTION>06</OPTION>
-                    <OPTION>07</OPTION>
-                    <OPTION>08</OPTION>
-                    <OPTION>09</OPTION>
-                    <OPTION>10</OPTION>
-                    <OPTION>11</OPTION>
-                    <OPTION>12</OPTION>
-                    <OPTION>13</OPTION>
-                    <OPTION>14</OPTION>
-                    <OPTION>15</OPTION>
-                    <OPTION>16</OPTION>
-                    <OPTION>17</OPTION>
-                    <OPTION>18</OPTION>
-                    <OPTION>19</OPTION>
-                    <OPTION>20</OPTION>
-                    <OPTION>21</OPTION>
-                    <OPTION>22</OPTION>
-                    <OPTION>23</OPTION>
-                </SELECT>
-                <SELECT NAME=from_mm SIZE=1 onchange="settime()">
-                    <OPTION SELECTED>00</OPTION>
-                    <OPTION>15</OPTION>
-                    <OPTION>30</OPTION>
-                    <OPTION>45</OPTION>
-                </SELECT>
-                -
-                <SELECT NAME=to_hh SIZE=1>
-                    <OPTION SELECTED>00</OPTION>
-                    <OPTION>01</OPTION>
-                    <OPTION>02</OPTION>
-                    <OPTION>03</OPTION>
-                    <OPTION>04</OPTION>
-                    <OPTION>05</OPTION>
-                    <OPTION>06</OPTION>
-                    <OPTION>07</OPTION>
-                    <OPTION>08</OPTION>
-                    <OPTION>09</OPTION>
-                    <OPTION>10</OPTION>
-                    <OPTION>11</OPTION>
-                    <OPTION>12</OPTION>
-                    <OPTION>13</OPTION>
-                    <OPTION>14</OPTION>
-                    <OPTION>15</OPTION>
-                    <OPTION>16</OPTION>
-                    <OPTION>17</OPTION>
-                    <OPTION>18</OPTION>
-                    <OPTION>19</OPTION>
-                    <OPTION>20</OPTION>
-                    <OPTION>21</OPTION>
-                    <OPTION>22</OPTION>
-                    <OPTION>23</OPTION>
-                </SELECT>
-                <SELECT NAME=to_mm SIZE=1>
-                    <OPTION SELECTED>00</OPTION>
-                    <OPTION>15</OPTION>
-                    <OPTION>30</OPTION>
-                    <OPTION>45</OPTION>
-                </SELECT>
-                &nbsp;&nbsp;:&nbsp;&nbsp;
-                <SELECT NAME=duration SIZE=1 onChange=settime(this.options[this.selectedIndex].value)>
-                    <OPTION VALUE="0.25">0:15</OPTION>
-                    <OPTION VALUE="0.50">0:30</OPTION>
-                    <OPTION VALUE="0.75">0:45</OPTION>
-                    <OPTION VALUE="1.00">1:00</OPTION>
-                    <OPTION VALUE="1.25">1:15</OPTION>
-                    <OPTION VALUE="1.50">1:30</OPTION>
-                    <OPTION VALUE="1.75">1:45</OPTION>
-                    <OPTION VALUE="2.00">2:00</OPTION>
-                    <OPTION VALUE="2.25">2:15</OPTION>
-                    <OPTION VALUE="2.50">2:30</OPTION>
-                    <OPTION VALUE="2.75">2:45</OPTION>
-                    <OPTION VALUE="3.00">3:00</OPTION>
-                </SELECT>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <INPUT TYPE=HIDDEN NAME=action VALUE="">
-                <INPUT TYPE=HIDDEN NAME=edit VALUE="">
-                <INPUT TYPE=HIDDEN NAME=eintragid VALUE="">
-                <INPUT TYPE=BUTTON onclick="action.value='eintrag'; submit()" VALUE="Eintragen!">
-            </P>
-              
+        function settime() {
+            console.log("settime called");
+        }
 
-            <div id="test"></div>
-  </body>
+    </script>
+    <style type="text/css">
+        #picker {
+            width: 200px;
+            height: 200px
+        }
+
+        #slider {
+            width: 30px;
+            height: 200px
+        }
+    </style>
+</head>
+
+<body>
+    <P class=times>
+        <SELECT NAME=from_hh SIZE=1 onchange="settime()">
+            <OPTION SELECTED>00</OPTION>
+            <OPTION>01</OPTION>
+            <OPTION>02</OPTION>
+            <OPTION>03</OPTION>
+            <OPTION>04</OPTION>
+            <OPTION>05</OPTION>
+            <OPTION>06</OPTION>
+            <OPTION>07</OPTION>
+            <OPTION>08</OPTION>
+            <OPTION>09</OPTION>
+            <OPTION>10</OPTION>
+            <OPTION>11</OPTION>
+            <OPTION>12</OPTION>
+            <OPTION>13</OPTION>
+            <OPTION>14</OPTION>
+            <OPTION>15</OPTION>
+            <OPTION>16</OPTION>
+            <OPTION>17</OPTION>
+            <OPTION>18</OPTION>
+            <OPTION>19</OPTION>
+            <OPTION>20</OPTION>
+            <OPTION>21</OPTION>
+            <OPTION>22</OPTION>
+            <OPTION>23</OPTION>
+        </SELECT>
+        <SELECT NAME=from_mm SIZE=1 onchange="settime()">
+            <OPTION SELECTED>00</OPTION>
+            <OPTION>15</OPTION>
+            <OPTION>30</OPTION>
+            <OPTION>45</OPTION>
+        </SELECT>
+        -
+        <SELECT NAME=to_hh SIZE=1>
+            <OPTION SELECTED>00</OPTION>
+            <OPTION>01</OPTION>
+            <OPTION>02</OPTION>
+            <OPTION>03</OPTION>
+            <OPTION>04</OPTION>
+            <OPTION>05</OPTION>
+            <OPTION>06</OPTION>
+            <OPTION>07</OPTION>
+            <OPTION>08</OPTION>
+            <OPTION>09</OPTION>
+            <OPTION>10</OPTION>
+            <OPTION>11</OPTION>
+            <OPTION>12</OPTION>
+            <OPTION>13</OPTION>
+            <OPTION>14</OPTION>
+            <OPTION>15</OPTION>
+            <OPTION>16</OPTION>
+            <OPTION>17</OPTION>
+            <OPTION>18</OPTION>
+            <OPTION>19</OPTION>
+            <OPTION>20</OPTION>
+            <OPTION>21</OPTION>
+            <OPTION>22</OPTION>
+            <OPTION>23</OPTION>
+        </SELECT>
+        <SELECT NAME=to_mm SIZE=1>
+            <OPTION SELECTED>00</OPTION>
+            <OPTION>15</OPTION>
+            <OPTION>30</OPTION>
+            <OPTION>45</OPTION>
+        </SELECT>
+        &nbsp;&nbsp;:&nbsp;&nbsp;
+        <SELECT NAME=duration SIZE=1 onChange=settime(this.options[this.selectedIndex].value)>
+            <OPTION VALUE="0.25">0:15</OPTION>
+            <OPTION VALUE="0.50">0:30</OPTION>
+            <OPTION VALUE="0.75">0:45</OPTION>
+            <OPTION VALUE="1.00">1:00</OPTION>
+            <OPTION VALUE="1.25">1:15</OPTION>
+            <OPTION VALUE="1.50">1:30</OPTION>
+            <OPTION VALUE="1.75">1:45</OPTION>
+            <OPTION VALUE="2.00">2:00</OPTION>
+            <OPTION VALUE="2.25">2:15</OPTION>
+            <OPTION VALUE="2.50">2:30</OPTION>
+            <OPTION VALUE="2.75">2:45</OPTION>
+            <OPTION VALUE="3.00">3:00</OPTION>
+        </SELECT>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <INPUT TYPE=HIDDEN NAME=action VALUE="">
+        <INPUT TYPE=HIDDEN NAME=edit VALUE="">
+        <INPUT TYPE=HIDDEN NAME=eintragid VALUE="">
+        <INPUT TYPE=BUTTON onclick="action.value='eintrag'; submit()" VALUE="Eintragen!">
+    </P>
+
+    <div id="small" class="cp cp-small"></div>
+</body>
+
 </html>

@@ -8,7 +8,7 @@
     "build": "webpack --config webpack.prod.js",
     "build-dev": "webpack --config webpack.dev.js",
     "build-script-dev": "webpack --config webpack.userscript.dev.js",
-    "build-script-prod": "webpack --config webpack.userscript.prod.js"    
+    "build-script-prod": "webpack --config webpack.userscript.prod.js"
   },
   "keywords": [],
   "author": "Udo Woitek <udo.woitek@raytion.com>",
@@ -16,10 +16,11 @@
   "devDependencies": {
     "@types/node": "^9.4.6",
     "clean-webpack-plugin": "^0.1.18",
-    "css-loader": "^0.28.10",
+    "css-loader": "^0.28.11",
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.0.4",
-    "style-loader": "^0.20.2",
+    "imports-loader": "^0.8.0",
+    "style-loader": "^0.20.3",
     "ts-loader": "^4.0.1",
     "tslint": "^5.9.1",
     "typescript": "^2.7.2",

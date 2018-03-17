@@ -22,13 +22,13 @@ export interface IStyleEditorValues {
   [key: string]: IRGBValue;
 }
 
-const STYLE_EDITOR_VALUE_KEYS = [  
-  "Background", 
-  "Time bar", 
-  "Button BG(Hrs)", 
-  "Button Text", 
-  "Button BG(Min)", 
-  "Button Text(Min)" 
+const STYLE_EDITOR_VALUE_KEYS = [
+  "Background",
+  "Time bar",
+  "Button BG(Hrs)",
+  "Button Text",
+  "Button BG(Min)",
+  "Button Text(Min)"
 ];
 
 const OK_TEXT = "✔";
@@ -80,7 +80,7 @@ export class StyleEditor
       if (this.values[key] === undefined) {
         this.values[key] = TIME_TABLE_DEFAULT_COLORS[key];
       }
-    }); 
+    });
     return super.init();
   }
 

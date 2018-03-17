@@ -37,8 +37,8 @@ export class TimeTable implements IStylesheetProvider {
   constructor(targetControl: TimeControlWrapper) {
     this.target = targetControl;
     this.styleConfiguration = new StyleConfiguration(this);
-    this.colorValues =
-      LocalStorageService.getObject(COLOR_CONFIG_STORE) || TIME_TABLE_DEFAULT_COLORS;
+    this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE)
+     || TIME_TABLE_DEFAULT_COLORS;
   }
 
   public getProviderName() {
@@ -72,7 +72,8 @@ export class TimeTable implements IStylesheetProvider {
             color: white.toString()
           },
           "& table th": {
-            backgroundColor: important(this.getCssColorFor("Time bar").toString())
+            backgroundColor: important(
+              this.getCssColorFor("Time bar").toString())
           },
           "& td": {
             verticalAlign: "middle",
@@ -144,7 +145,7 @@ export class TimeTable implements IStylesheetProvider {
   }
 
   public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
-    let inputButton: HTMLInputElement = btn || ElementFactory.input()
+    const inputButton: HTMLInputElement = btn || ElementFactory.input()
           .withInputType("button")
           .usingStyleConfig(this.styleConfiguration)
           .withStyles("invisible")
@@ -263,9 +264,11 @@ export class TimeTable implements IStylesheetProvider {
   }
 
   private getCssColorFor(
-    element: "Background" | "Button BG(Hrs)" | "Button Text(Hrs)" | "Time bar" | "Button BG(Min)" | "Button Text(Min)"
+    element: "Background" | "Button BG(Hrs)" | "Button Text(Hrs)"
+      | "Time bar" | "Button BG(Min)" | "Button Text(Min)"
   ): ColorHelper {
-    const cssColor = this.colorValues[element] || TIME_TABLE_DEFAULT_COLORS[element];
+    const cssColor = this.colorValues[element]
+      || TIME_TABLE_DEFAULT_COLORS[element];
     return rgb(cssColor.r, cssColor.g, cssColor.b);
   }
 
