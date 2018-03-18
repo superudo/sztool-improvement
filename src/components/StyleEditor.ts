@@ -272,6 +272,13 @@ export class StyleEditor extends AbstractComponent implements IObservable {
       .usingStyleConfig(this.styleConfiguration)
       .withStyles("styleDialogButton")
       .withChildren(ElementFactory.text(CANCEL_TEXT).create())
+      .withEventListener("click", (() => {
+        const context: StyleEditor = this;
+        return (e: Event) => {
+          context.notifyCancel();
+          e.stopPropagation();
+        };
+      })())
       .create() as HTMLElement;
   }
 
