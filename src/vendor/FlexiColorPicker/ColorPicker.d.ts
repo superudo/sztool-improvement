@@ -8,7 +8,6 @@ export interface RGB {
     r: number;
     g: number;
     b: number;
-    hex: string;
 }
 
 declare class ColorPicker {

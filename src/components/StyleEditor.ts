@@ -1,5 +1,6 @@
 import * as csstips from "csstips";
-import { ColorHelper, em, linen, percent, rgb } from "csx";
+import { center } from "csstips";
+import { aquamarine, color, ColorHelper, em, gray, linen, percent, rgb } from "csx";
 import { style } from "typestyle";
 import { IInitializable } from "../interfaces/IInitializable";
 import { IObservable } from "../interfaces/IObservable";
@@ -7,13 +8,14 @@ import { IObserver } from "../interfaces/IObserver";
 import { IRGBValue } from "../interfaces/IRGBValue";
 import { IRunnable } from "../interfaces/IRunnable";
 import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { ColorPicker } from "../vendor/FlexiColorPicker/ColorPicker";
 import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
 import { RangeSlider } from "./RangeSlider";
 import { TIME_TABLE_DEFAULT_COLORS } from "./TimeTable";
 
 export interface IStyleEditorValues {
-  "Background": IRGBValue;
+  Background: IRGBValue;
   "Time bar": IRGBValue;
   "Button BG(Hrs)": IRGBValue;
   "Button Text(Hrs)": IRGBValue;
@@ -34,19 +36,18 @@ const STYLE_EDITOR_VALUE_KEYS = [
 const OK_TEXT = "✔";
 const CANCEL_TEXT = "✘";
 
-export class StyleEditor
-  extends AbstractComponent
-  implements IObserver, IObservable {
+const COLOR_EXAMPLE_SIZE: string = "18px";
 
+export class StyleEditor extends AbstractComponent implements IObservable {
   private styleConfiguration: StyleConfiguration;
 
   private values: IStyleEditorValues;
   private lastSelectedOption: string;
 
   private selector: HTMLSelectElement;
-  private redSlider: RangeSlider;
-  private greenSlider: RangeSlider;
-  private blueSlider: RangeSlider;
+  private colorPicker: ColorPicker;
+  private colorValueInput: HTMLInputElement;
+  private colorExample: HTMLElement;
 
   private observers: IObserver[];
 
@@ -92,11 +93,11 @@ export class StyleEditor
     return this.rootID;
   }
 
-  public getDefaultStylesheet(): object {
+  public getDefaultStylesheet(): any {
     return {
       appContainer: style({
         padding: em(0.2),
-        display: "flex",
+        display: "inline-block",
         backgroundColor: linen.toString(),
         margin: 0,
         position: "absolute",
@@ -105,225 +106,124 @@ export class StyleEditor
         bottom: 0,
         right: 0
       }),
-      form: style({
-        display: "flex",
-        flexDirection: "column",
-        fontSize: "9pt",
-        fontFamily: StyleConfiguration.getFontFamily(),
+      // new styles
+      colorTargetSelectionOuter: style({
+        fontSize: percent(98),
         width: percent(100),
+        margin: em(0.1),
+        display: "inline-block",
         $nest: {
-          "& p": {
-            margin: em(0.3),
-          },
-          "& input": {
-            height: em(1.4)
-          },
           "& select": {
-            fontSize: percent(90),
-            height: em(1.4),
-          },
-          "& label": {
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          },
-        }
-      }),
-      slidercontainer: style({
-        padding: "0 " + em(0.5),
-        textAlign: "right",
-        display: "flex",
-        justifyContent: "center",
-        $nest: {
-          "&>input[type=range]": {
-            marginRight: em(0.35),
-            width: em(6)
-          },
-          "&>input[type=text]": {
-            height: em(1),
-            width: em(2),
-            marginRight: 0
+            fontSize: "9pt",
+            float: "left",
+            width: em(8.5)
           }
         }
       }),
-      buttoncontainer: style({
-        fontSize: percent(90),
-        width: percent(100),
-        padding: "0 " + em(0.3),
-        textAlign: "right",
+      colorExampleOuter: style({
+        fontSize: percent(98),
+        backgroundColor: gray.toString(),
+        height: COLOR_EXAMPLE_SIZE,
+        width: COLOR_EXAMPLE_SIZE,
+        borderRadius: COLOR_EXAMPLE_SIZE,
+        marginRight: em(0.3),
+        marginLeft: em(0.2),
+        display: "inline-block",
+        position: "relative",
+        float: "left"
+      }),
+      colorExampleInner: style({
+        fontSize: percent(98),
+        backgroundColor: gray.toString(),
+        height: COLOR_EXAMPLE_SIZE,
+        width: COLOR_EXAMPLE_SIZE,
+        borderRadius: COLOR_EXAMPLE_SIZE
+      }),
+      colorSelectorOuter: style({
+        display: "flex",
+        alignItems: "flex-end",
+        flexDirection: "row",
+        paddingLeft: em(0.2),
         $nest: {
-          "& input[type=button]": {
-            padding: "0 " + em(1),
-            height: em(1.5),
-            marginRight: em(0.35)
+          "& input": {
+            fontSize: "8pt",
+            width: em(4.5),
+            height: em(0.9),
+            marginLeft: em(0.5)
           },
-          "& input[type=button]::last-child": {
-            marginRight: 0
+          "& a": {
+            fontSize: "10pt",
+            fontWeight: "bold",
+            textDecoration: "none",
+            cursor: "pointer",
+            float: "right",
+          }
+        }
+      }),
+      dialogButtonContainer: style({
+        display: "inline-block",
+        paddingRight: em(0.1),
+        float: "right",
+        $nest: {
+          "& a": {
+            fontSize: "9pt",
+            textDecoration: "none",
+            borderStyle: "solid",
+            borderColor: "black",
+            borderWidth: "1px",
+            padding: "0 0.4em",
+            marginLeft: em(0.3),
+            display: "inline-block",
+            position: "relative",
+            cursor: "pointer",
+            $nest: {
+              "&:hover": {
+                backgroundColor: aquamarine.toString()
+              }
+            }
           }
         }
       })
     };
   }
 
-  public onChangeCallback(e: Event, parent: StyleEditor) {
-    parent.visualizeColor(parent.getSliderValues());
-  }
-
   public renderDOM(appRoot: HTMLElement) {
     this.styleConfiguration.addStyles(appRoot, "appContainer");
 
-    const rSliderDiv = ElementFactory.div().withID("r-slider").create();
-    const gSliderDiv = ElementFactory.div().withID("g-slider").create();
-    const bSliderDiv = ElementFactory.div().withID("b-slider").create();
+    appRoot.appendChild(this.createSelectorDiv());
+    appRoot.appendChild(this.createColorPickerDiv());
 
-    const optionArray: HTMLElement[] = [];
-    Object.keys(this.values).forEach(
-      (value: string, index: number, array: string[]) => {
-      console.log("Option", value);
-      const optionElement = ElementFactory.option()
-        .withName(value)
-        .create();
-      optionArray.push(optionElement as HTMLElement);
-    });
+    this.selector.selectedIndex = 0;
+    this.lastSelectedOption = this.getSelectedColorOption();
+    const c = this.getSelectedOptionsColor();
+    this.updateColorControls(rgb(c.r, c.g, c.b).toHexString(), c);
+    this.colorPicker.setRgb(c);
 
-    const selectFactory = ElementFactory.select();
-    optionArray.forEach((element) => {
-      selectFactory.withChildren(element);
-    });
-
-    selectFactory.withEventListener("input", (() => {
-      const parentControl: StyleEditor = this;
-      return (e: Event) => {
-        const sel = e.target as HTMLSelectElement;
-        const newSelectedOption = sel.selectedOptions[0].value;
-        if (newSelectedOption !== parentControl.lastSelectedOption) {
-          const colorSet = parentControl.getSliderValues();
-          parentControl.values[parentControl.lastSelectedOption] = colorSet;
-          parentControl.lastSelectedOption = newSelectedOption;
-          const col = parentControl.values[newSelectedOption];
-          parentControl.setSliderValues(col);
-        }
-        e.stopPropagation();
-      };
-    })()
-  );
-
-    this.selector = selectFactory.create() as HTMLSelectElement;
-
-    appRoot.appendChild(
-      ElementFactory.form()
-        .usingStyleConfig(this.styleConfiguration)
-        .withStyles("form")
-        .withChildren(
-          ElementFactory.paragraph()
-            .withChildren(
-              ElementFactory.label()
-                .withChildren(
-                  ElementFactory.span()
-                    .usingStyleConfig(this.styleConfiguration)
-                    .withChildren(
-                      ElementFactory.text(
-                        Array(17).join(String.fromCharCode(160)))
-                        .create())
-                    .withID("styleEdit-example")
-                    .create(),
-                    this.selector
-                )
-                .create()
-            )
-            .create(),
-          ElementFactory.paragraph()
-            .withChildren(
-              ElementFactory.label()
-                .withChildren(
-                    ElementFactory.text("Red").create(),
-                    rSliderDiv
-                )
-                .create()
-            )
-            .create(),
-          ElementFactory.paragraph()
-            .withChildren(
-              ElementFactory.label()
-                .withChildren(
-                  ElementFactory.text("Green").create(),
-                  gSliderDiv
-                )
-                .create()
-            )
-            .create(),
-          ElementFactory.paragraph()
-            .withChildren(
-              ElementFactory.label()
-                .withChildren(
-                    ElementFactory.text("Blue").create(),
-                    bSliderDiv
-                )
-                .create()
-            )
-            .create(),
-          ElementFactory.paragraph()
-            .withChildren(
-              ElementFactory.div()
-                .usingStyleConfig(this.styleConfiguration)
-                .withStyles("buttoncontainer")
-                .withChildren(
-                  ElementFactory.text(String.fromCharCode(160)).create(),
-                  ElementFactory.input()
-                    .withInputType("button")
-                    .withValue(OK_TEXT)
-                    .withName(OK_TEXT)
-                    .withEventListener("click", (() => {
-                      const parentControl: StyleEditor = this;
-                      return (e: Event) => {
-                        parentControl.setSelectedOptionsColorFromSliders();
-                        parentControl.notifyOk(parentControl.values);
-                        e.stopPropagation();
-                      };
-                    })()
-                  ).create(),
-                  ElementFactory.input()
-                    .withInputType("button")
-                    .withValue(CANCEL_TEXT)
-                    .withName(CANCEL_TEXT)
-                    .withEventListener("click", (() => {
-                      const parentControl: StyleEditor = this;
-                      return (e: Event) => {
-                        parentControl.notifyCancel();
-                        e.stopPropagation();
-                      };
-                    })())
-                    .create()
-                )
-                .create()
-            )
-            .create()
-        )
-        .create()
-    );
-
-    this.redSlider = new RangeSlider("r-slider");
-    this.greenSlider = new RangeSlider("g-slider");
-    this.blueSlider = new RangeSlider("b-slider");
-
-    this.lastSelectedOption = Object.keys(this.values)[0];
-    const initColor = this.values[this.lastSelectedOption];
-    this.initializeSliders(initColor);
-
-    this.redSlider.registerObserver(this);
-    this.greenSlider.registerObserver(this);
-    this.blueSlider.registerObserver(this);
-
-    this.visualizeColor(initColor);
   }
 
-  public receiveNotification<T>(message: T) {
-    this.visualizeColor(this.getSliderValues());
+  private createSelectorDiv(): HTMLElement {
+    return ElementFactory.div()
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("colorTargetSelectionOuter")
+      .withChildren(
+        this.createColorExample(),
+        this.createElementSelector(),
+        this.createButtonDiv()
+      )
+      .withID("B1")
+      .create() as HTMLElement;
   }
 
-  public setSelectedOptionsColorFromSliders() {
-    const colorSet: IRGBValue = this.getSliderValues();
-    this.values[this.lastSelectedOption] = colorSet;
+  private createColorPickerDiv(): HTMLElement {
+    return ElementFactory.div()
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("colorSelectorOuter")
+      .withChildren(
+        this.createColorPicker(),
+        this.createColorInput()
+      )
+      .withID("C1")
+      .create() as HTMLElement;
   }
 
   private getSelectedOptionsColor(): IRGBValue {
@@ -332,33 +232,155 @@ export class StyleEditor
     return selectedColor;
   }
 
-  private getSliderValues(): IRGBValue {
-    return {
-      r: this.redSlider.getCurrentValue(),
-      g: this.greenSlider.getCurrentValue(),
-      b: this.blueSlider.getCurrentValue()
-    };
+  private createColorExample(): HTMLElement {
+    this.colorExample = ElementFactory.div()
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("colorExampleInner")
+      .withID("colorExampleInner")
+      .create() as HTMLElement;
+
+    return ElementFactory.link()
+      .withHref("#")
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("colorExampleOuter")
+      .withChildren(this.colorExample)
+      .create() as HTMLElement;
   }
 
-  private setSliderValues(color: IRGBValue) {
-    this.redSlider.setValue(color.r);
-    this.greenSlider.setValue(color.g);
-    this.blueSlider.setValue(color.b);
+  private createOKButton(): HTMLElement {
+    return ElementFactory.link()
+      .withHref("#")
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("styleDialogButton")
+      .withChildren(ElementFactory.text(OK_TEXT).create())
+      .withEventListener(
+        "click",
+        (() => {
+          const context: StyleEditor = this;
+          return (e: Event) => {
+            context.notifyOk(context.values);
+            e.stopPropagation();
+          };
+        })()
+      )
+      .create() as HTMLElement;
   }
 
-  private initializeSliders(selectedColor: IRGBValue) {
-    this.redSlider.init({min: 0, max: 255, value: selectedColor.r}).run();
-    this.greenSlider.init({min: 0, max: 255, value: selectedColor.g}).run();
-    this.blueSlider.init({min: 0, max: 255, value: selectedColor.b}).run();
+  private createCancelButton(): HTMLElement {
+    return ElementFactory.link()
+      .withHref("#")
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("styleDialogButton")
+      .withChildren(ElementFactory.text(CANCEL_TEXT).create())
+      .create() as HTMLElement;
   }
 
-  private visualizeColor(colorValue?: IRGBValue) {
-    if (!colorValue) {
-      this.visualizeColor(this.getSelectedOptionsColor());
-    }
+  private createElementSelector(): HTMLElement {
+    const optionArray: HTMLElement[] = [];
+    Object.keys(this.values).forEach(
+      (value: string, index: number, array: string[]) => {
+        const optionElement = ElementFactory.option()
+          .withName(value)
+          .create();
+        optionArray.push(optionElement as HTMLElement);
+      }
+    );
 
-    const currentColor = rgb(colorValue.r, colorValue.g, colorValue.b);
-    document.getElementById("styleEdit-example")
-      .style.backgroundColor = currentColor.toString();
+    const selectFactory = ElementFactory.select();
+    optionArray.forEach((element) => {
+      selectFactory.withChildren(element);
+    });
+
+    selectFactory.withEventListener("change",
+      (() => {
+        const context: StyleEditor = this;
+        return (e: Event) => {
+          context.lastSelectedOption = this.getSelectedColorOption();
+          const c = context.getSelectedOptionsColor();
+          context.updateColorControls(rgb(c.r, c.g, c.b).toHexString(), c);
+          context.colorPicker.setRgb(c);
+          e.stopPropagation();
+        };
+      })()
+    );
+
+    this.selector = selectFactory.create() as HTMLSelectElement;
+    return this.selector;
+  }
+
+  private createColorInput(): HTMLElement {
+    this.colorValueInput = ElementFactory.input()
+      .withInputType("text")
+      .withID("selected-color-hex")
+      .create() as HTMLInputElement;
+
+    return ElementFactory.div()
+      .withChildren(
+        this.colorValueInput,
+        ElementFactory.br().create(),
+        this.createTransferColorButton()
+      ).create() as HTMLElement;
+  }
+
+  private createTransferColorButton(): HTMLElement {
+    return ElementFactory.link()
+      .withHref("#")
+      .withChildren(
+        ElementFactory.text("🢀").create()
+      )
+      .withEventListener("click", (() => {
+        const context: StyleEditor = this;
+        return (e: Event) => {
+          const v = context.colorValueInput.value;
+          const newColor = color(v);
+          const newColorRgb = {
+            r: newColor.red(), g: newColor.green(), b: newColor.green()
+          };
+
+          this.values[this.getSelectedColorOption()] = newColorRgb;
+          this.colorExample.style.backgroundColor = newColor.toHexString();
+          this.colorPicker.setRgb(newColorRgb);
+          e.stopPropagation();
+        };
+      })())
+      .create() as HTMLElement;
+  }
+
+  private createColorPicker(): HTMLElement {
+    const pickerContainer = ElementFactory.div()
+      .withID("styleeditor-color-picker")
+      .create() as HTMLElement;
+    pickerContainer.classList.add("cp", "cp-small");
+    pickerContainer.style.clear = "left";
+
+    this.colorPicker = new ColorPicker(
+      pickerContainer,
+      (() => {
+        const context: StyleEditor = this;
+        return (hexP: string, hsvP: any, rgbP: any) => {
+          context.updateColorControls(hexP, rgbP);
+        };
+      })()
+    );
+
+    return pickerContainer;
+  }
+
+  private getSelectedColorOption(): string {
+    return this.selector.options[this.selector.selectedIndex].value;
+  }
+
+  private createButtonDiv(): HTMLElement {
+    return ElementFactory.div()
+      .usingStyleConfig(this.styleConfiguration)
+      .withStyles("dialogButtonContainer")
+      .withChildren(this.createCancelButton(), this.createOKButton())
+      .create() as HTMLElement;
+  }
+
+  private updateColorControls(hexP: string, rgbP: IRGBValue) {
+    this.values[this.getSelectedColorOption()] = rgbP;
+    this.colorExample.style.backgroundColor = hexP;
+    this.colorValueInput.value = hexP;
   }
 }

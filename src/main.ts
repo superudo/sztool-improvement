@@ -10,15 +10,6 @@ import { ColorPicker, HSV, RGB } from "./vendor/FlexiColorPicker/ColorPicker";
     }
   }
 
-  const cp = new ColorPicker(
-    document.getElementById("small"),
-    (hex: string, hsv: any, rgb: any) => {
-      console.log(hsv.h, hsv.s, hsv.v);
-      console.log(rgb.r, rgb.g, rgb.b);
-      document.body.style.backgroundColor = hex;
-    }
-   );
-
   checkDevMode();
 
   new TimeSelectorApp("app-root")
