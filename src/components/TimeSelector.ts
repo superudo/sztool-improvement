@@ -1,8 +1,9 @@
 import * as csstips from "csstips";
 import { percent } from "csx/lib";
 import { style } from "typestyle";
+import { Utf16Encode } from "../environment/Utf16Encode";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { addStyles } from "../tools/StyleUtils";
 import { CONTROL_ITEM_CONFIG,
   CONTROL_ITEM_NEW,
   ControlSwitcher,
@@ -12,7 +13,6 @@ import { OverlayControl } from "./OverlayControl";
 import { IStyleEditorValues, StyleEditor } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
-import { Utf16Encode } from "../environment/Utf16Encode";
 
 const INPUT_BUTTON_SIGN: string = Utf16Encode.utf16Encode([0x27BD]); // "➽";
 const CANCEL_BUTTON_SIGN: string = Utf16Encode.utf16Encode([0x26D4]); // "⛔";
@@ -24,7 +24,6 @@ export class TimeSelector implements IStylesheetProvider {
   private toTime: TimeControlWrapper;
   private inputButton: HTMLInputElement;
   private cancelButton: HTMLInputElement;
-  private styleConfiguration: StyleConfiguration;
 
   constructor(
     from: TimeControlWrapper,
@@ -36,7 +35,6 @@ export class TimeSelector implements IStylesheetProvider {
     this.toTime = to;
     this.inputButton = inputButton;
     this.cancelButton = cancelButton;
-    this.styleConfiguration = new StyleConfiguration(this);
   }
 
   public getProviderName() {
@@ -46,7 +44,7 @@ export class TimeSelector implements IStylesheetProvider {
   public getDefaultStylesheet() {
     return {
       controlArea: style(csstips.content, {
-        fontFamily: StyleConfiguration.getFontFamily(),
+        fontFamily: "Helvetica, Arial, sans-serif",
         fontSize: "10pt",
       })
     };
@@ -66,7 +64,7 @@ export class TimeSelector implements IStylesheetProvider {
     if (controlDiv === null) {
       throw new Error("App root not found.");
     }
-    this.styleConfiguration.addStyles(controlDiv, "controlArea");
+    addStyles(controlDiv, this, "controlArea");
     controlDiv.appendChild(fromView);
     controlDiv.appendChild(toView);
 

@@ -1,6 +1,6 @@
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { addStyles } from "../tools/StyleUtils";
 
 const INPUT_BUTTON_TEXT: string = "Eintragen!";
 const CANCEL_BUTTON_TEXT: string = "cancel edit!";
@@ -14,11 +14,9 @@ export interface ITimeControls {
 
 export class TimesParagraphWrapper implements IStylesheetProvider {
   private paragraph: HTMLParagraphElement;
-    private styleConfiguration: StyleConfiguration;
 
   constructor(p: HTMLParagraphElement) {
     this.paragraph = p;
-    this.styleConfiguration = new StyleConfiguration(this);
   }
 
   public getProviderName() {
@@ -35,7 +33,7 @@ export class TimesParagraphWrapper implements IStylesheetProvider {
   }
 
   public hideParagraph() {
-      this.styleConfiguration.addStyles(this.paragraph, "hiddenTime");
+      addStyles(this.paragraph, this, "hiddenTime");
   }
 
   public getParagraphElement(): HTMLParagraphElement {

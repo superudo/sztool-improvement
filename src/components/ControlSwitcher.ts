@@ -1,8 +1,7 @@
 import { style } from "typestyle";
-import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
-import { ElementFactory } from "./ElementFactory";
 import { Utf16Encode } from "../environment/Utf16Encode";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
+import { ElementFactory } from "./ElementFactory";
 
 export const USE_CONTROL_ITEM = "useNewControl";
 export const CONTROL_ITEM_ORIGINAL = "original";
@@ -34,10 +33,11 @@ class ControlSwitcherStyle implements IStylesheetProvider {
 // tslint:disable-next-line:max-classes-per-file
 export class ControlSwitcher {
   public static injectOnSwitch(parent: HTMLElement) {
+    const styleConfiguration = new ControlSwitcherStyle();
     parent.appendChild(
       ElementFactory.link()
         .withHref("#")
-        .usingStyleConfig(this.styleConfiguration)
+        .usingStylesheetProvider(styleConfiguration)
         .withStyles("switchLink")
         .withChildren(ElementFactory.text(OFF_SYMBOL).create())
         .withEventListener("click", (e: Event) => {
@@ -50,14 +50,15 @@ export class ControlSwitcher {
   }
 
   public static injectOffSwitch(parent: HTMLElement) {
+    const styleConfiguration = new ControlSwitcherStyle();
     parent.appendChild(
       ElementFactory.span()
-        .usingStyleConfig(this.styleConfiguration)
+        .usingStylesheetProvider(styleConfiguration)
         .withStyles("outer")
         .withChildren(
           ElementFactory.link()
             .withHref("#")
-            .usingStyleConfig(this.styleConfiguration)
+            .usingStylesheetProvider(styleConfiguration)
             .withStyles("switchLink")
             .withChildren(ElementFactory.text(WRENCH_SYMBOL).create())
             .withEventListener("click", (e: Event) => {
@@ -70,7 +71,7 @@ export class ControlSwitcher {
           ElementFactory.br().create(),
           ElementFactory.link()
             .withHref("#")
-            .usingStyleConfig(this.styleConfiguration)
+            .usingStylesheetProvider(styleConfiguration)
             .withStyles("switchLink")
             .withChildren(ElementFactory.text(ON_SYMBOL).create())
             .withEventListener("click", (e: Event) => {
@@ -83,8 +84,4 @@ export class ControlSwitcher {
         .create()
     );
   }
-
-  private static styleConfiguration = new StyleConfiguration(
-    new ControlSwitcherStyle()
-  );
 }

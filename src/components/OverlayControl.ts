@@ -1,21 +1,20 @@
 import { em, lightgray, percent } from "csx/lib";
 import { style } from "typestyle/lib";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
+import { addStyles } from "../tools/StyleUtils";
 import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
 
 export class OverlayControl extends AbstractComponent {
-    private stlyeConfig: StyleConfiguration;
 
     constructor(rootID: string) {
         super(rootID);
-        this.stlyeConfig = new StyleConfiguration(this);
     }
 
     public renderDOM(div: HTMLElement): void {
-        this.stlyeConfig.addStyles(div, "appContainer");
+        addStyles(div, this, "appContainer");
         div.appendChild(ElementFactory.div()
-            .usingStyleConfig(this.stlyeConfig)
+            .usingStylesheetProvider(this)
             .withStyles("appContainer").create());
     }
 

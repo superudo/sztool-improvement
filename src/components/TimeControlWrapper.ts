@@ -1,14 +1,13 @@
 import { important, red } from "csx";
 import { style } from "typestyle";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { addStyles, removeStyles } from "../tools/StyleUtils";
 import { TimeSelector } from "./TimeSelector";
 
 
 export class TimeControlWrapper implements IStylesheetProvider {
     public hourControl: HTMLSelectElement;
     public minuteControl: HTMLSelectElement;
-    private styleConfiguration: StyleConfiguration;
 
     constructor(hour: HTMLElement, minute: HTMLElement) {
         if (hour instanceof HTMLSelectElement) {
@@ -17,7 +16,6 @@ export class TimeControlWrapper implements IStylesheetProvider {
         if (minute instanceof HTMLSelectElement) {
             this.minuteControl = minute as HTMLSelectElement;
         }
-        this.styleConfiguration = new StyleConfiguration(this);
     }
 
     public getProviderName() {
@@ -65,11 +63,11 @@ export class TimeControlWrapper implements IStylesheetProvider {
 
     public indicateError(isError: boolean) {
         if (isError) {
-            this.styleConfiguration.addStyles(this.hourControl, "invalid");
-            this.styleConfiguration.addStyles(this.minuteControl, "invalid");
+            addStyles(this.hourControl, this, "invalid");
+            addStyles(this.minuteControl, this, "invalid");
         } else {
-            this.styleConfiguration.removeStyles(this.hourControl, "invalid");
-            this.styleConfiguration.removeStyles(this.minuteControl, "invalid");
+            removeStyles(this.hourControl, this, "invalid");
+            removeStyles(this.minuteControl, this, "invalid");
         }
     }
 

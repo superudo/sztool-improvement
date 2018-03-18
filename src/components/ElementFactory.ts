@@ -1,5 +1,5 @@
-import { StyleConfiguration } from "../styles/StyleConfiguration";
-
+import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
+import { addStyles } from "../tools/StyleUtils";
 const TAGS = {
   PARAGRAPH: "p",
   FORM: "form",
@@ -36,7 +36,7 @@ interface IParentFactory extends IElementFactory {
 }
 
 interface IStyledParentFactory extends IParentFactory {
-  usingStyleConfig: (s: StyleConfiguration) => IStyleableFactory;
+  usingStylesheetProvider: (s: IStylesheetProvider) => IStyleableFactory;
 }
 
 interface IStyleableFactory extends IParentFactory {
@@ -178,7 +178,7 @@ export class ElementFactory
   private text: string;
   private value: any;
   private url: string;
-  private styleConfiguration: StyleConfiguration;
+  private stylesheetProvider: IStylesheetProvider;
   private events: IEvent[];
   private that: ElementFactory;
   private optionSelected: boolean;
@@ -186,10 +186,10 @@ export class ElementFactory
   private attributes: any;
   private sourceElement: HTMLElement;
 
-  public usingStyleConfig(
-    styleConfiguration: StyleConfiguration
+  public usingStylesheetProvider(
+    stylesheetProvider: IStylesheetProvider
   ): ElementFactory {
-    this.styleConfiguration = styleConfiguration;
+    this.stylesheetProvider = stylesheetProvider;
     return this;
   }
 
@@ -321,11 +321,12 @@ export class ElementFactory
     }
 
       if (this.styles) {
-      if (!this.styleConfiguration) {
-        throw new Error("No style configuration given.");
+      if (!this.stylesheetProvider
+        ||  !this.stylesheetProvider.getDefaultStylesheet()) {
+        throw new Error("No stylesheet provider given.");
       }
       for (const styleName of this.styles) {
-        this.styleConfiguration.addStyles(element, styleName);
+        addStyles(element, this.stylesheetProvider, styleName);
       }
     }
 

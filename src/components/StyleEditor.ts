@@ -7,11 +7,10 @@ import { IObservable } from "../interfaces/IObservable";
 import { IObserver } from "../interfaces/IObserver";
 import { IRGBValue } from "../interfaces/IRGBValue";
 import { IRunnable } from "../interfaces/IRunnable";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
+import { addStyles } from "../tools/StyleUtils";
 import { ColorPicker } from "../vendor/FlexiColorPicker/ColorPicker";
 import { AbstractComponent } from "./AbstractComponent";
 import { ElementFactory } from "./ElementFactory";
-import { RangeSlider } from "./RangeSlider";
 import { TIME_TABLE_DEFAULT_COLORS } from "./TimeTable";
 
 export interface IStyleEditorValues {
@@ -39,8 +38,6 @@ const CANCEL_TEXT = "✘";
 const COLOR_EXAMPLE_SIZE: string = "18px";
 
 export class StyleEditor extends AbstractComponent implements IObservable {
-  private styleConfiguration: StyleConfiguration;
-
   private values: IStyleEditorValues;
   private lastSelectedOption: string;
 
@@ -53,7 +50,6 @@ export class StyleEditor extends AbstractComponent implements IObservable {
 
   constructor(rootID: string) {
     super(rootID);
-    this.styleConfiguration = new StyleConfiguration(this);
     this.observers = [];
   }
 
@@ -194,7 +190,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
   }
 
   public renderDOM(appRoot: HTMLElement) {
-    this.styleConfiguration.addStyles(appRoot, "appContainer");
+    addStyles(appRoot, this, "appContainer");
 
     appRoot.appendChild(this.createSelectorDiv());
     appRoot.appendChild(this.createColorPickerDiv());
@@ -209,7 +205,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
 
   private createSelectorDiv(): HTMLElement {
     return ElementFactory.div()
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("colorTargetSelectionOuter")
       .withChildren(
         this.createColorExample(),
@@ -222,7 +218,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
 
   private createColorPickerDiv(): HTMLElement {
     return ElementFactory.div()
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("colorSelectorOuter")
       .withChildren(
         this.createColorPicker(),
@@ -240,14 +236,14 @@ export class StyleEditor extends AbstractComponent implements IObservable {
 
   private createColorExample(): HTMLElement {
     this.colorExample = ElementFactory.div()
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("colorExampleInner")
       .withID("colorExampleInner")
       .create() as HTMLElement;
 
     return ElementFactory.link()
       .withHref("#")
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("colorExampleOuter")
       .withChildren(this.colorExample)
       .create() as HTMLElement;
@@ -256,7 +252,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
   private createOKButton(): HTMLElement {
     return ElementFactory.link()
       .withHref("#")
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("styleDialogButton")
       .withChildren(ElementFactory.text(OK_TEXT).create())
       .withEventListener(
@@ -275,7 +271,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
   private createCancelButton(): HTMLElement {
     return ElementFactory.link()
       .withHref("#")
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("styleDialogButton")
       .withChildren(ElementFactory.text(CANCEL_TEXT).create())
       .withEventListener("click", (() => {
@@ -385,7 +381,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
 
   private createButtonDiv(): HTMLElement {
     return ElementFactory.div()
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("dialogButtonContainer")
       .withChildren(this.createCancelButton(), this.createOKButton())
       .create() as HTMLElement;

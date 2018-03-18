@@ -2,7 +2,6 @@ import { IComponent } from "../interfaces/IComponent";
 import { IInitializable } from "../interfaces/IInitializable";
 import { IRunnable } from "../interfaces/IRunnable";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
 
 export abstract class AbstractComponent
     implements IComponent, IInitializable, IRunnable, IStylesheetProvider {

@@ -6,7 +6,6 @@ import { cssRaw, style } from "typestyle";
 import * as LocalStorageService from "../environment/LocalStorageService";
 import { IRGBValue } from "../interfaces/IRGBValue";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
-import { StyleConfiguration } from "../styles/StyleConfiguration";
 import { ElementFactory } from "./ElementFactory";
 import { IStyleEditorValues } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
@@ -31,12 +30,10 @@ export const TIME_TABLE_DEFAULT_COLORS: any = {
 
 export class TimeTable implements IStylesheetProvider {
   private target: TimeControlWrapper;
-  private styleConfiguration: StyleConfiguration;
   private colorValues: IStyleEditorValues;
 
   constructor(targetControl: TimeControlWrapper) {
     this.target = targetControl;
-    this.styleConfiguration = new StyleConfiguration(this);
     this.colorValues = LocalStorageService.getObject(COLOR_CONFIG_STORE)
      || TIME_TABLE_DEFAULT_COLORS;
   }
@@ -50,24 +47,24 @@ export class TimeTable implements IStylesheetProvider {
       outer: style(csstips.inlineBlock, {
         backgroundColor: this.getCssColorFor("Background").toString(),
         padding: em(0.3),
-        fontFamily: StyleConfiguration.getFontFamily(),
+        fontFamily: "Helvetica, Arial, sans-serif",
         fontSize: "12pt",
         position: "relative",
         overflowY: "auto"
       }),
       container: style({
         fontSize: "10pt",
-        fontFamily: StyleConfiguration.getFontFamily(),
+        fontFamily: "Helvetica, Arial, sans-serif",
         overflow: "hidden",
         display: "inline-block",
         $nest: {
           "& select": {
-            fontFamily: StyleConfiguration.getFontFamily(),
+            fontFamily: "Helvetica, Arial, sans-serif",
             marginTop: em(0.2),
           },
           "& table": {
             borderCollapse: "collapse",
-            fontFamily: StyleConfiguration.getFontFamily(),
+            fontFamily: "Helvetica, Arial, sans-serif",
             fontSize: percent(100),
             color: white.toString()
           },
@@ -147,7 +144,7 @@ export class TimeTable implements IStylesheetProvider {
   public createDom(btn: HTMLInputElement, btnValue: string): HTMLElement {
     const inputButton: HTMLInputElement = btn || ElementFactory.input()
           .withInputType("button")
-          .usingStyleConfig(this.styleConfiguration)
+          .usingStylesheetProvider(this)
           .withStyles("invisible")
           .create() as HTMLInputElement;
 
@@ -157,11 +154,11 @@ export class TimeTable implements IStylesheetProvider {
     const h = this.changeHours;
 
     return ElementFactory.div()
-      .usingStyleConfig(this.styleConfiguration)
+      .usingStylesheetProvider(this)
       .withStyles("outer")
       .withChildren(
         ElementFactory.div()
-          .usingStyleConfig(this.styleConfiguration)
+          .usingStylesheetProvider(this)
           .withStyles("container")
           .withChildren(
             ElementFactory.table()
@@ -175,7 +172,7 @@ export class TimeTable implements IStylesheetProvider {
                         ElementFactory.text(":").create(),
                         this.target.minuteControl,
                         ElementFactory.fromElement(inputButton)
-                          .usingStyleConfig(this.styleConfiguration)
+                          .usingStylesheetProvider(this)
                           .withStyles("inputButton")
                           .create()
                       )
