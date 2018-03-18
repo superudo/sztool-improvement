@@ -12,9 +12,10 @@ import { OverlayControl } from "./OverlayControl";
 import { IStyleEditorValues, StyleEditor } from "./StyleEditor";
 import { TimeControlWrapper } from "./TimeControlWrapper";
 import { TimeTable } from "./TimeTable";
+import { Utf16Encode } from "../environment/Utf16Encode";
 
-const INPUT_BUTTON_SIGN: string = "➽";
-const CANCEL_BUTTON_SIGN: string = "⛔";
+const INPUT_BUTTON_SIGN: string = Utf16Encode.utf16Encode([0x27BD]); // "➽";
+const CANCEL_BUTTON_SIGN: string = Utf16Encode.utf16Encode([0x26D4]); // "⛔";
 
 export class TimeSelector implements IStylesheetProvider {
   public fromTable: TimeTable;

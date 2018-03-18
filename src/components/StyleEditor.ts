@@ -116,8 +116,14 @@ export class StyleEditor extends AbstractComponent implements IObservable {
           "& select": {
             fontSize: "9pt",
             float: "left",
-            width: em(8.5)
-          }
+            width: em(8.5),
+            height: em(1.5),
+          },
+          "& label": {
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          },
         }
       }),
       colorExampleOuter: style({
@@ -165,6 +171,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
         paddingRight: em(0.1),
         float: "right",
         $nest: {
+<<<<<<< HEAD
           "& a": {
             fontSize: "9pt",
             textDecoration: "none",
@@ -181,6 +188,15 @@ export class StyleEditor extends AbstractComponent implements IObservable {
                 backgroundColor: aquamarine.toString()
               }
             }
+=======
+          "& input[type=button]": {
+            padding: "0 " + em(1),
+            height: em(1.7),
+            marginRight: em(0.35)
+          },
+          "& input[type=button]::last-child": {
+            marginRight: 0
+>>>>>>> 24f1d066692f5f8c0a9428d86709721e532ac42d
           }
         }
       })

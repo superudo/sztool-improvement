@@ -19,7 +19,7 @@ module.exports = merge(common, {
 */    
     new UglifyPlugin({
       uglifyOptions: {
-        ecma: 8,
+        ecma: 6,
         compress: true,
         extractComments: true,
       },
