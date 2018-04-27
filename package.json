@@ -1,7 +1,7 @@
 {
   "name": "sztool.webpack",
-  "version": "2.1.11",
-  "description": "",
+  "version": "2.2.0",
+  "description": "Creates a GreaseMonkey user script that improves the input options for working times in the time sheet tools currently used by Raytion. A link can be used to switch between the known and improved input options for working times. All other functionalities are retained.",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --open --color --config webpack.dev.js",
@@ -10,7 +10,11 @@
     "build-script-dev": "webpack --config webpack.userscript.dev.js",
     "build-script-prod": "webpack --config webpack.userscript.prod.js"
   },
-  "keywords": [],
+  "keywords": [
+    "greasemonkey",
+    "userscript",
+    "sztool"
+  ],
   "author": "Udo Woitek <udo.woitek@raytion.com>",
   "license": "ISC",
   "devDependencies": {

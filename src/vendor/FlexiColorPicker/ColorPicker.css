@@ -27,11 +27,11 @@
 }
 .cp-small .picker {
     width: 100px;
-    height: 100px;
+    height: 115px; /* was 100 */
 }
 .cp-small .slide {
     width: 15px;
-    height: 100px;
+    height: 115px; /* was 100 */
 }
 .cp-small .slide-wrapper {
     margin-left: 5px;

@@ -2,6 +2,7 @@ import { style } from "typestyle";
 import { Utf16Encode } from "../environment/Utf16Encode";
 import { IStylesheetProvider } from "../interfaces/IStylesheetProvider";
 import { ElementFactory } from "./ElementFactory";
+import { black } from "csx/lib";
 
 export const USE_CONTROL_ITEM = "useNewControl";
 export const CONTROL_ITEM_ORIGINAL = "original";
@@ -22,6 +23,7 @@ class ControlSwitcherStyle implements IStylesheetProvider {
       switchLink: style({
         textDecoration: "none",
         fontSize: "1.5em",
+        color: black.toString(),
       }),
       outer: style({
         display: "inline-block"

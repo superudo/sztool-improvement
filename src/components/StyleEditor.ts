@@ -1,6 +1,6 @@
 import * as csstips from "csstips";
 import { center } from "csstips";
-import { aquamarine, color, ColorHelper, em, gray, linen, percent, rgb } from "csx";
+import { aquamarine, color, ColorHelper, em, gray, linen, percent, rgb, black } from "csx";
 import { style } from "typestyle";
 import { IInitializable } from "../interfaces/IInitializable";
 import { IObservable } from "../interfaces/IObservable";
@@ -115,11 +115,6 @@ export class StyleEditor extends AbstractComponent implements IObservable {
             width: em(8.5),
             height: em(1.5),
           },
-          "& label": {
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-          },
         }
       }),
       colorExampleOuter: style({
@@ -149,11 +144,12 @@ export class StyleEditor extends AbstractComponent implements IObservable {
         $nest: {
           "& input": {
             fontSize: "8pt",
-            width: em(4.5),
-            height: em(0.9),
+            width: em(4.7),
+            height: em(1.4),
             marginLeft: em(0.5)
           },
           "& a": {
+            color: black.toString(),
             fontSize: "10pt",
             fontWeight: "bold",
             textDecoration: "none",
@@ -168,6 +164,7 @@ export class StyleEditor extends AbstractComponent implements IObservable {
         float: "right",
         $nest: {
           "& a": {
+            color: black.toString(),
             fontSize: "9pt",
             textDecoration: "none",
             borderStyle: "solid",
