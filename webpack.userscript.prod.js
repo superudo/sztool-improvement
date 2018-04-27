@@ -2,6 +2,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.prod.js');
 const VersionFile = require('webpack-version-file');
 const WebpackShellPlugin = require('webpack-shell-plugin');
+const package = require("./package.json");
 
 module.exports = merge(common, {
     plugins: [
@@ -12,13 +13,13 @@ module.exports = merge(common, {
             data: {
                 environment: "",
                 buildNumber : "",
-                updateUrl: "https://openuserjs.org/meta/udo80/sztool-update.meta.js"
+                updateUrl: "https://openuserjs.org/meta/udo80/" + package.name + ".meta.js"
             }
           }),
           new WebpackShellPlugin({
             onBuildEnd: [ 
                 'if not exist .\\userscript md userscript',
-                'type dist\\version.txt dist\\app.bundle.js > userscript\\sztool-update.user.js']
+                'type dist\\version.txt dist\\app.bundle.js > userscript\\' + package.name + '.user.js']
         }),
     ]
 });

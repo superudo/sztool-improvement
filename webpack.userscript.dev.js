@@ -2,6 +2,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.dev.js');
 const VersionFile = require('webpack-version-file');
 const WebpackShellPlugin = require('webpack-shell-plugin');
+const package = require("./package.json");
 
 module.exports = merge(common, {
     devServer: {},    
@@ -13,13 +14,13 @@ module.exports = merge(common, {
             data: {
                 environment: "-dev",
                 buildNumber: "." + Date.now().toString(),
-                updateUrl: "http://localhost:7070/greasemonkey/sztool-update.user.js",
+                updateUrl: "http://localhost:7070/greasemonkey/" + package.name + ".user.js",
             }
         }),
         new WebpackShellPlugin({
             onBuildEnd: [ 
                 'if not exist .\\userscript md userscript',
-                'type dist\\version.txt dist\\app.bundle.js > userscript\\sztool-update.user.js']
+                'type dist\\version.txt dist\\app.bundle.js > userscript\\' + package.name + '.user.js']
         }),
     ]
 });
