@@ -39,6 +39,7 @@
   "dependencies": {
     "csstips": "^0.2.2",
     "csx": "^8.5.0",
+    "macaddress": "^0.2.9",
     "typestyle": "^1.7.2"
   }
 }
