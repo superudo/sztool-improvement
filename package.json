@@ -1,6 +1,6 @@
 {
   "name": "sztool.webpack",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "Creates a GreaseMonkey user script that improves the input options for working times in the time sheet tools currently used by Raytion. A link can be used to switch between the known and improved input options for working times. All other functionalities are retained.",
   "main": "index.js",
   "scripts": {
@@ -18,28 +18,28 @@
   "author": "Udo Woitek <udo.woitek@raytion.com>",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^12.7.2",
+    "@types/node": "^13.11.0",
     "clean-webpack-plugin": "^3.0.0",
-    "css-loader": "^3.2.0",
-    "file-loader": "^4.2.0",
-    "html-webpack-plugin": "^3.2.0",
+    "css-loader": "^3.4.2",
+    "file-loader": "^6.0.0",
+    "html-webpack-plugin": "^4.0.4",
     "imports-loader": "^0.8.0",
-    "style-loader": "^1.0.0",
-    "ts-loader": "^6.0.4",
-    "tslint": "^5.19.0",
-    "typescript": "^3.5.3",
-    "webpack": "^4.39.3",
-    "webpack-cli": "^3.3.7",
+    "style-loader": "^1.1.3",
+    "ts-loader": "^6.2.2",
+    "tslint": "^6.1.1",
+    "typescript": "^3.8.3",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
     "webpack-closure-compiler": "^2.1.6",
-    "webpack-dev-server": ">=3.8.0",
+    "webpack-dev-server": ">=3.10.3",
     "webpack-merge": "^4.2.2",
     "webpack-shell-plugin": "^0.5.0",
-    "webpack-version-file": "^0.1.3"
+    "webpack-version-file": "^0.1.6"
   },
   "dependencies": {
-    "csstips": "^1.1.0",
-    "csx": "^10.0.0",
+    "csstips": "^1.2.0",
+    "csx": "^10.0.1",
     "macaddress": "^0.2.9",
-    "typestyle": "^2.0.4"
+    "typestyle": "^2.1.0"
   }
 }
